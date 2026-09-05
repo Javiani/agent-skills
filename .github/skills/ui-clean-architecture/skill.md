@@ -17,6 +17,8 @@ These instructions are the authority. When the documentation is silent, do not i
 - The first level below an abstraction folder must use the abstraction's directory shape: components and services are directories for each abstraction with an `index` file. For example, use `components/catalog-header/index.tsx`, never `components/CatalogHeader.tsx`.
 - External communication belongs in `services/<service-name>/index.ts`. Services are stateless and return promises of entities; do not place API/fetch functions beside a domain root or component.
 - JSON adapters and application data models belong in `entities/<entity-name>.ts`. Keep transformation functions such as `mapShow` in the entity abstraction rather than in a service.
+- Entity factories are the public API of their files: use a noun for the factory and a noun plus `Type` for its structure type. Prefer destructured defaults in the factory signature, and keep private transformation helpers below the exported factory.
+- Entities are pure adaptation boundaries. They do not perform network communication or local persistence.
 - Treat every screen/page as a `Domain`.
 - A `Domain` is the highest-level component of the screen and must be imported/rendered by the framework according to the route.
 - Each `Domain` must be `standalone`: it must know the required inputs and outputs needed for that screen to work independently.
@@ -26,8 +28,13 @@ These instructions are the authority. When the documentation is silent, do not i
 - `Section Components` must be stacked vertically to form the screen; they are not meant to directly reference other section components.
 - `Atomic Components` are smaller and reusable, and may live beside a `Section Component` when they are only local, or in a shared area when reused by several domains.
 - `Constants` must be centralized and exported; values and pure functions are grouped semantically, not fragmented by folder depth.
+- give each Section Component its own entry point and one public component export
 - `Layouts` store the boilerplate structure reused across screens, such as the shell of the HTML document and repeated layout wrappers.
 - `Shared` stores abstractions used by multiple domains, following the same folder structure pattern used by domains.
+- `Stores` persist state and coordinate communication between components within a screen, using `@javiani/onijs`.
+- A Domain entry point exports one public root component; secondary UI components live in their own `components/<component-name>/index` entry points.
+- Components that depend on shared store state consume it through the selected framework's store adapter, or through the framework-agnostic `@javiani/onijs` vanilla API when no framework adapter exists; do not drill store state through the Domain merely to reach descendants.
+- Use props for explicit inputs, local composition, or derived values, not as a transport path for shared store state.
 
 ## Vocabulary to preserve
 
@@ -40,6 +47,7 @@ Use the architecture's own vocabulary consistently:
 - `Constants`
 - `Layouts`
 - `Shared`
+- `Stores`
 - `standalone`
 
 Do not replace these terms with terms from another architecture.
@@ -62,6 +70,8 @@ src/
       services/
         <service-name>/
           index.[ts,js]
+      store/
+        index.[ts,js]
       index[tsx,astro,svelte]
   shared/
     components/
@@ -70,7 +80,8 @@ src/
 
 ### Layouts
 
-- Put reusable page shell / boilerplate code in `src/layouts/`.
+- Put the standard HTML document shell and reusable frame-level elements directly in `src/layouts/`.
+- Do not create nested layout folders for layout variants.
 - Keep layout code framework-aware only when the framework requires it, but do not let layout code become a new architectural abstraction.
 
 ### Domains
@@ -84,12 +95,43 @@ src/
   - `constants/` for screen-specific fixed values or pure functions
   - `entities/<entity-name>` for data adapters and models local to that screen
   - `services/<service-name>/index` for stateless external API or fetch integrations
+  - `store/index` for the screen's state store when persistence or component coordination is required
+
+- Keep detailed screen-block HTML in Section Components and let the Domain compose and coordinate them.
+- Export only the Domain root component from the domain `index` file; move every secondary UI component to its own component entry point.
+- Do not read shared store state in the Domain solely to pass it to descendants.
 
 ### Shared
 
 - Put abstractions reused across screens in `src/shared/`.
 - The folder structure mirrors the domain pattern and keeps cross-domain abstractions under one shared namespace.
 - If a component, constant, or helper is needed by more than one `Domain`, it is a candidate for `Shared`.
+
+### Entities
+
+- Export the entity factory as the file's public API.
+- Name entity factories with nouns and structure types with the noun plus `Type`.
+- Declare default values directly in destructured factory parameters.
+- Keep private sanitization, formatting, image conversion, and normalization helpers below the exported factory.
+- Keep entity work framework-agnostic and limited to adapting raw payloads into application-shaped values.
+
+### Services
+
+- Put API, fetch, analytics, and other external communication in stateless services.
+- Services may use entities to shape returned data, but must not perform data persistence.
+- Service functions return `Promise<Entity>` or `Promise<Entity[]>`.
+
+### Stores
+
+- Use `@javiani/onijs` for screen state stores.
+- A screen may have only one store, located at `store/index.ts`.
+- Components capture system and user events and dispatch actions; the store keeps state in memory or a persistence mechanism such as session or local storage.
+- A store exposes state through its store API, including subscriptions, dispatching actions, and reading current state.
+- In React, use `@javiani/onijs/react` and `useStore()` in state-dependent components; do not use the vanilla subscriber to trigger React renders.
+- In non-React applications, use the framework-agnostic `@javiani/onijs` API and connect `getState`, `dispatch`, and `subscribe` to the framework's own reactive mechanism.
+- Keep `initialState` in a named constant and declare the actions object inline in the `Oni` or `createStore` call; do not extract actions into a separate constant.
+- Filter subscriber side effects by the received action with `switch (action)` when only specific actions should trigger them.
+- For asynchronous changes, prefer explicit action sequences for loading and loaded states. Side-effect actions are allowed when they simplify the architecture; alternatively, a component may call a service and pass the resulting promise to a store action.
 
 ### Constants
 
@@ -119,7 +161,8 @@ Action:
 - Create a `Domain` folder under `src/domains/<domain-name>/`.
 - Implement the root screen component in the domain `index` file.
 - Compose the screen from section components that are stacked vertically.
-- Pass required data from the domain down to those sections, never hide the screen contract inside deeper components.
+- Let each state-dependent component consume shared screen state through the selected framework's store adapter, or through `@javiani/onijs` vanilla when no adapter exists.
+- Pass only explicit component inputs and derived values; never transport shared store state through unrelated components with prop chains.
 
 ### When deciding what belongs inside a domain
 
@@ -158,7 +201,7 @@ Determine whether the imported component is a sibling section or a child/atomic 
 Action:
 - A `Section Component` should not directly relate to another `Section Component` as a peer dependency.
 - A section component may react to local user events and update local state.
-- If a section needs state shared with its children, pass the state down as props.
+- If a section needs shared screen state, consume it through the selected framework's store adapter, or through `@javiani/onijs` vanilla when no adapter exists; use props only for explicit local inputs or composition.
 - Do not let section components become hidden routers for other sections.
 
 ### When creating or updating constants
@@ -203,7 +246,14 @@ Before approving a change, inspect these points:
 - Do components use `components/<component-name>/index` rather than component files directly under `components/`?
 - Are external API/fetch functions under `services/<service-name>/index`?
 - Are JSON mapping functions and data models under `entities/<entity-name>`?
+- Do entity factories and structure types follow the documented noun and noun-plus-`Type` naming rules?
+- Are entities pure adapters without network communication or persistence?
+- Are external communication functions stateless services returning promises of entities?
+- Does a screen use at most one `store/index` store when screen state persistence or component coordination is required?
+- Does the store use `@javiani/onijs` and receive component-dispatched actions?
 - Is the domain the highest-level screen component?
+- Does each domain `index` file export only one public root component?
+- Do state-dependent components consume shared state through the framework adapter instead of receiving it through prop drilling?
 - Does a section component import another section component directly?
 - Is a screen-specific abstraction placed in `Shared` when it is not truly cross-domain?
 - Is a cross-domain abstraction kept in `Shared`?
@@ -223,6 +273,8 @@ These are not allowed unless explicitly supported by the documented architecture
 - Do not place a cross-domain abstraction in a single screen folder if it is reused elsewhere.
 - Do not let section components become peers of one another across the screen.
 - Do not spread constants across fragmented folder structures.
+- Do not put external communication or persistence inside entities.
+- Do not create more than one store for a screen.
 - Do not assume dependency rules that are not explicit in this skill or the source `knowledge/` files.
 
 ## Default implementation heuristic
@@ -235,6 +287,7 @@ If the architecture does not define a detail, choose the simplest implementation
 - visual composition is assembled from `Section Components`
 - repeated UI pieces become `Atomic Components`
 - constants remain centralized and named consistently
+- screen persistence and component coordination stay in the screen's single `@javiani/onijs` store
 
 ## Reference files
 
@@ -244,5 +297,9 @@ Use the source documentation for deeper details:
 - `knowledge/domain/index.md`
 - `knowledge/components/index.md`
 - `knowledge/constants/index.md`
+- `knowledge/entities/index.md`
+- `knowledge/services/index.md`
+- `knowledge/stores/index.md` when the screen uses shared state, persistence, or component coordination
+- `knowledge/stores/index.md`
 
 These files explain the architecture; this skill converts them into operational decisions for agents.

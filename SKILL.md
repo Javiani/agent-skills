@@ -28,6 +28,9 @@ When a rule is unclear, do not invent one; keep the implementation minimal and a
 11. Services are stateless functions that perform external communication and return entities or arrays of entities.
 12. Framework files such as `page.tsx`, `app/.../page.*`, or equivalent route files act as integrators, not as the architecture itself.
 13. Shared abstractions are only for cross-domain reuse.
+14. A Domain entry point exports one public root component; secondary UI components live in their own `components/<component-name>/index` entry points.
+15. Components that depend on shared store state consume it through the selected framework's store adapter, or through the framework-agnostic `@javiani/onijs` vanilla API when no framework adapter exists; do not drill store state through the Domain merely to reach descendants.
+16. Use props for explicit inputs, local composition, or derived values, not as a transport path for shared store state.
 
 ## Required reading before implementation
 
@@ -39,6 +42,7 @@ Before creating or modifying architecture-aware code, inspect the relevant archi
 - `knowledge/constants/index.md` for constant organization and naming rules
 - `knowledge/entities/index.md` for entity factory/adaptation rules
 - `knowledge/services/index.md` for stateless service responsibilities and return contracts
+- `knowledge/stores/index.md` for store contracts, framework adapters, and state subscription rules when the screen uses shared state
 
 If the task involves a screen, domain, shared abstraction, reusable component, constant, entity, or service, load the relevant section before deciding the implementation.
 
@@ -68,7 +72,9 @@ When creating or modifying a domain:
 - let the domain know its required inputs and outputs
 - keep domain-local abstractions in the domain unless they are reused across domains
 - use the framework route or page integration layer to resolve route parameters, load required context, and render the domain
-- keep detailed HTML and screen composition in the domain, not in the route file
+- keep detailed HTML in Section Components and let the Domain compose and coordinate them
+- export only the Domain root component from the domain `index` file; move every secondary UI component to its own component entry point
+- do not read shared store state in the Domain solely to pass it to descendants
 
 ### Shared
 When creating or modifying a shared abstraction:
@@ -80,12 +86,14 @@ When creating or modifying a shared abstraction:
 When creating or modifying a component:
 - decide whether it is a section component or an atomic component
 - if it is a section component, keep it purpose-specific and standalone, folder-organized under `components/` with a semantic folder name and an `index` entry point
+- give each Section Component its own entry point and one public component export
 - if it is an atomic component used only within one section component, place it in a subfolder within that section component's folder
 - if an atomic component is used by multiple section components within the same domain, place it as a sibling folder alongside the section components
 - if an atomic component is used across multiple domains, place it in `shared/components/`
 - section components must not directly depend on sibling section components
 - components react to user events and update local state when needed
-- pass necessary state to child components when those children depend on it
+- components that depend on shared screen state use the framework's store adapter locally, or the framework-agnostic `@javiani/onijs` vanilla API when no adapter exists
+- pass explicit inputs to children when needed, but do not prop-drill shared store state through the Domain or unrelated intermediate components
 
 ### Entities
 When creating or modifying an entity:
@@ -105,6 +113,14 @@ When creating or modifying a service:
 - return `Promise<Entity>` or `Promise<Entity[]>` as documented
 - place service logic under a contextual `services/<service-name>/index` pattern in the relevant domain or shared scope
 - treat HTTP or API calls as service concerns, not domain or component concerns
+
+### Stores
+
+- Use `@javiani/onijs` for screen state stores.
+- In React, use `@javiani/onijs/react` and `useStore()` in state-dependent components; do not use the vanilla subscriber to trigger React renders.
+- In non-React applications, use the framework-agnostic `@javiani/onijs` API and connect `getState`, `dispatch`, and `subscribe` to the framework's own reactive mechanism.
+- Keep `initialState` in a named constant and declare the actions object inline in the `Oni` or `createStore` call; do not extract actions into a separate constant.
+- Filter subscriber side effects by the received action with `switch (action)` when only specific actions should trigger them.
 
 ### Constants
 When creating or modifying constants:
@@ -126,6 +142,8 @@ When creating a feature for a screen:
 3. Compose the screen from the domain root.
 4. Keep section boundaries independent and stacked top-to-bottom.
 5. Use framework route files only to integrate the domain into the page lifecycle.
+6. Let each state-dependent component consume shared screen state through the selected framework's store adapter, or through `@javiani/onijs` vanilla when no adapter exists.
+7. Pass only explicit component inputs and derived values; never transport shared store state through unrelated components with prop chains.
 
 ### Modify an existing feature
 Before modifying a feature:
@@ -147,6 +165,8 @@ Review for architecture adherence by checking:
 - Is the structure still `layouts` / `domains` / `shared`?
 - Are the documented sub-structures still respected for components, constants, entities, and services when applicable?
 - Is each screen still a domain with clear inputs and outputs?
+- Does each domain `index` file export only one public root component?
+- Do state-dependent components consume shared state through the framework adapter instead of receiving it through prop drilling?
 - Are section components still isolated from sibling sections?
 - Are constants still centralized and properly named?
 - Are framework route files used as integrations rather than as the architecture definition?

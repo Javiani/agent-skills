@@ -15,6 +15,7 @@ The architecture has two parts:
 - [Components](./components/index.md)
 - [Constants](./constants/index.md)
 - [Services](./services/index.md)
+- [Stores](./stores/index.md)
 
 # Folder Structure
 
@@ -47,8 +48,11 @@ A domain represents one screen or page. It owns every abstraction required by th
 - Domain-local constants use semantic flat files directly inside `constants/`.
 - Domain-local entities use semantic files directly inside `entities/`. JSON adapters such as `map-show` belong to the corresponding entity.
 - Domain-local services use `services/<service-name>/index`. API and fetch functions are services, not loose files at the domain root.
+- Components that depend on shared screen state read it through the selected UI framework's store adapter; do not drill store state through the Domain only to reach descendants.
 
-Framework pages and route files are domain integrators. They resolve route parameters, load required context, and render the domain. Detailed HTML and screen composition belong to the domain, not the route file.
+Framework pages and route files are domain integrators. They resolve route parameters, load required context, and render the domain. The Domain owns screen composition and coordination, while detailed HTML for each meaningful screen block belongs to its Section Component, not to the route file or an oversized Domain component.
+
+The Domain entry point should expose one public root component. Secondary UI components must be placed in their own component entry points and imported by the Domain root.
 
 ## Shared
 
