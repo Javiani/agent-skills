@@ -1,5 +1,5 @@
 ---
-name: agent-skill-ui-clean-architecture
+name: ui-clean-architecture
 description: Enforces the UI Clean Architecture described in references/knowledge/ for screen-oriented front-end implementations.
 ---
 
