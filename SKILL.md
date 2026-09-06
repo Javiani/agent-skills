@@ -117,9 +117,13 @@ When creating or modifying a service:
 ### Stores
 
 - Use `@javiani/onijs` for screen state stores.
+- Keep at most one store per screen and place it at `store/index.ts` within that screen's domain.
 - In React, use `@javiani/onijs/react` and `useStore()` in state-dependent components; do not use the vanilla subscriber to trigger React renders.
 - In non-React applications, use the framework-agnostic `@javiani/onijs` API and connect `getState`, `dispatch`, and `subscribe` to the framework's own reactive mechanism.
 - Keep `initialState` in a named constant and declare the actions object inline in the `Oni` or `createStore` call; do not extract actions into a separate constant.
+- Name every action in `SCREAMING_SNAKE_CASE` and pass payloads as objects with named properties, including single-value payloads.
+- Keep actions pure by default. An action may use the third-argument `{ dispatch }` helper to make an asynchronous transition explicit by dispatching another action.
+- Never perform local or session persistence inside an action. Register persistence outside the actions with `store.subscribe`.
 - Filter subscriber side effects by the received action with `switch (action)` when only specific actions should trigger them.
 
 ### Constants
