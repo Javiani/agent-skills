@@ -4,7 +4,7 @@
 
 Type: structure
 Strength: MUST
-Source: knowledge/index.md
+Source: references/knowledge/index.md
 
 Statement:
 The project must be separated into layouts, domains and shared.
@@ -21,7 +21,7 @@ This is the top-level folder-system rule for the architecture.
 
 Type: responsibility
 Strength: MUST
-Source: knowledge/index.md
+Source: references/knowledge/index.md
 
 Statement:
 Layouts define the standard HTML boilerplate and reused cross-screen elements.
@@ -37,7 +37,7 @@ The layout layer is described as the place for standard page shell logic.
 
 Type: structure
 Strength: MUST
-Source: knowledge/index.md
+Source: references/knowledge/index.md
 
 Statement:
 Domains are the set of screens/pages of the application.
@@ -54,7 +54,7 @@ Each domain is a top-level screen abstraction.
 
 Type: responsibility
 Strength: MUST
-Source: knowledge/domain/index.md
+Source: references/knowledge/domain/index.md
 
 Statement:
 Each screen/domain must function in a standalone manner and know the inputs and outputs it needs to save and expose to the next screen.
@@ -71,7 +71,7 @@ This establishes screen autonomy and explicit boundaries.
 
 Type: dependency
 Strength: MUST
-Source: knowledge/domain/index.md
+Source: references/knowledge/domain/index.md
 
 Statement:
 A domain is the highest-level component of the screen and must include all components and dependencies it needs to generate the screen.
@@ -88,7 +88,7 @@ The domain is the composition root for the page.
 
 Type: dependency
 Strength: MUST
-Source: knowledge/index.md
+Source: references/knowledge/index.md
 
 Statement:
 Domain abstractions can depend on components and constants when those abstractions are only used in the domain context.
@@ -105,7 +105,7 @@ This allows local domain-specific abstractions.
 
 Type: structure
 Strength: MUST
-Source: knowledge/index.md
+Source: references/knowledge/index.md
 
 Statement:
 Shared stores cross-domain abstractions that are reused by multiple domains.
@@ -121,7 +121,7 @@ Shared is the reuse bucket for architecture-wide abstractions.
 
 Type: structure
 Strength: MUST
-Source: knowledge/index.md
+Source: references/knowledge/index.md
 
 Statement:
 Shared follows the same folder structure as domains, but its purpose is to hold shared abstractions.
@@ -137,7 +137,7 @@ The structure is repeated, but the content is cross-domain rather than screen-sp
 
 Type: structure
 Strength: MUST
-Source: knowledge/components/index.md
+Source: references/knowledge/components/index.md
 
 Statement:
 Components are abstractions that wrap the UI parts of the application and may be of two types: section components and atomic components.
@@ -154,7 +154,7 @@ This defines the two kinds of UI subcomponents.
 
 Type: responsibility
 Strength: MUST
-Source: knowledge/components/index.md
+Source: references/knowledge/components/index.md
 
 Statement:
 A section component represents a horizontal block with a unique context and purpose, and a screen is formed by section components stacked from top to bottom.
@@ -170,7 +170,7 @@ The composition of a screen is a vertical stack of self-contained sections.
 
 Type: dependency
 Strength: MUST
-Source: knowledge/components/index.md
+Source: references/knowledge/components/index.md
 
 Statement:
 A section component must not relate directly to other section components; it may only receive properties from its parent domain.
@@ -187,7 +187,7 @@ This preserves independence between screen sections.
 
 Type: behavior
 Strength: MUST
-Source: knowledge/components/index.md
+Source: references/knowledge/components/index.md
 
 Statement:
 Each component is responsible for reacting to user events such as clicks and mouseover, updating local state, and passing state to child components when dependencies exist.
@@ -204,7 +204,7 @@ Behavior is local-first and flows downward when needed.
 
 Type: structure
 Strength: MUST
-Source: knowledge/components/index.md
+Source: references/knowledge/components/index.md
 
 Statement:
 Atomic components are smaller, generic components used repeatedly across the system.
@@ -220,7 +220,7 @@ Atomic components are usually repeated building blocks inside or across sections
 
 Type: structure
 Strength: MUST
-Source: knowledge/components/index.md
+Source: references/knowledge/components/index.md
 
 Statement:
 If an atomic component is used by multiple section components, it may be placed in a sibling folder beside the section components.
@@ -236,7 +236,7 @@ This is the named exception for reuse across sections.
 
 Type: structure
 Strength: MUST
-Source: knowledge/index.md
+Source: references/knowledge/index.md
 
 Statement:
 Constants should be placed in dedicated files, separated semantically, and not broken into deep folder structures like components.
@@ -252,7 +252,7 @@ The architecture prefers simple constant files over component-like nesting.
 
 Type: naming
 Strength: MUST
-Source: knowledge/constants/index.md
+Source: references/knowledge/constants/index.md
 
 Statement:
 Constants, whether variables or functions, must be exported and named in SCREAMING_SNAKE_CASE.
@@ -268,7 +268,7 @@ The naming rule is explicit and normative.
 
 Type: responsibility
 Strength: MUST
-Source: knowledge/constants/index.md
+Source: references/knowledge/constants/index.md
 
 Statement:
 Constants centralize system fixed values and pure functions that derive from other constant values.
@@ -284,7 +284,7 @@ The purpose of constants is to hold stable values and deterministic transforms.
 
 Type: integration
 Strength: MUST
-Source: knowledge/index.md
+Source: references/knowledge/index.md
 
 Statement:
 Framework conventions for routes such as pages or app folders must be followed for pages, while the architecture's domain abstraction composes the screen.
@@ -301,7 +301,7 @@ Framework conventions are used at the route boundary, not as the architecture it
 
 Type: decision
 Strength: MUST
-Source: knowledge/index.md
+Source: references/knowledge/index.md
 
 Statement:
 The framework page is an integrator for the architecture abstractions.
@@ -318,7 +318,7 @@ The framework file adapts to the architecture rather than defining it.
 
 Type: example
 Strength: EXAMPLE
-Source: knowledge/index.md
+Source: references/knowledge/index.md
 
 Statement:
 The sample Next.js route `app/blog/page.tsx` imports the domain and renders it as the screen composition root.
@@ -334,7 +334,7 @@ This example demonstrates the route/domain composition pattern.
 
 Type: structure
 Strength: MUST
-Source: knowledge/index.md
+Source: references/knowledge/index.md
 
 Statement:
 The domain folder may include subfolders such as `components/` and `constants/` when those abstractions exist only within that domain's context.
@@ -351,7 +351,7 @@ This is the local-domain organization rule.
 
 Type: example
 Strength: EXAMPLE
-Source: knowledge/index.md
+Source: references/knowledge/index.md
 
 Statement:
 The project example shows `src/layouts`, `src/domains`, and `src/shared` as the canonical directory hierarchy.
@@ -367,7 +367,7 @@ It demonstrates the documented convention but does not by itself establish a sep
 
 Type: naming
 Strength: MUST
-Source: knowledge/constants/index.md
+Source: references/knowledge/constants/index.md
 
 Statement:
 Constants may be populated from `process.env` and exported as system variables.

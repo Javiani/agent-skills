@@ -1,15 +1,15 @@
 ---
 name: agent-skill-ui-clean-architecture
-description: Enforces the UI Clean Architecture described in knowledge/ for screen-oriented front-end implementations.
+description: Enforces the UI Clean Architecture described in references/knowledge/ for screen-oriented front-end implementations.
 ---
 
 # UI Clean Architecture Skill
 
 ## Source of truth
 
-Use `knowledge/` as the only source of architectural truth.
+Use `references/knowledge/` as the only source of architectural truth.
 
-This skill compiles the knowledge in `knowledge/` into agent behavior. It does not reinterpret the architecture through Clean Architecture, DDD, Hexagonal Architecture, MVC, or any other known approach.
+This skill compiles the knowledge in `references/knowledge/` into agent behavior. It does not reinterpret the architecture through Clean Architecture, DDD, Hexagonal Architecture, MVC, or any other known approach.
 
 When a rule is unclear, do not invent one; keep the implementation minimal and aligned with the documented structure.
 
@@ -34,15 +34,15 @@ When a rule is unclear, do not invent one; keep the implementation minimal and a
 
 ## Required reading before implementation
 
-Before creating or modifying architecture-aware code, inspect the relevant architectural concepts in `knowledge/`:
+Before creating or modifying architecture-aware code, inspect the relevant architectural concepts in `references/knowledge/`:
 
-- `knowledge/index.md` for the project structure and framework integration rules
-- `knowledge/domain/index.md` for domain responsibilities and standalone screen behavior
-- `knowledge/components/index.md` for section/atomic component boundaries and behavior
-- `knowledge/constants/index.md` for constant organization and naming rules
-- `knowledge/entities/index.md` for entity factory/adaptation rules
-- `knowledge/services/index.md` for stateless service responsibilities and return contracts
-- `knowledge/stores/index.md` for store contracts, framework adapters, and state subscription rules when the screen uses shared state
+- `references/knowledge/index.md` for the project structure and framework integration rules
+- `references/knowledge/domain/index.md` for domain responsibilities and standalone screen behavior
+- `references/knowledge/components/index.md` for section/atomic component boundaries and behavior
+- `references/knowledge/constants/index.md` for constant organization and naming rules
+- `references/knowledge/entities/index.md` for entity factory/adaptation rules
+- `references/knowledge/services/index.md` for stateless service responsibilities and return contracts
+- `references/knowledge/stores/index.md` for store contracts, framework adapters, and state subscription rules when the screen uses shared state
 
 If the task involves a screen, domain, shared abstraction, reusable component, constant, entity, or service, load the relevant section before deciding the implementation.
 
@@ -52,7 +52,7 @@ Use this sequence for every implementation task:
 
 1. Identify affected architecture concepts.
 2. Determine whether the task changes a `layout`, `domain`, `shared`, `component`, `constant`, `entity`, or `service`.
-3. Check the relevant `knowledge/` guidance before editing code.
+3. Check the relevant `references/knowledge/` guidance before editing code.
 4. Choose the implementation that respects the architecture without inventing new architectural rules.
 5. Validate the result against the known invariants.
 
@@ -215,7 +215,7 @@ When a framework is swapped:
 ## Supporting material
 
 For detailed rule tracing and architecture-model context, see:
-- `docs/extracted-rules.md`
-- `docs/architecture-model.md`
-- `docs/uncertainties.md`
-- `docs/architecture-reference.md`
+- `references/architecture/extracted-rules.md`
+- `references/architecture/architecture-model.md`
+- `references/architecture/uncertainties.md`
+- `references/architecture/architecture-reference.md`
