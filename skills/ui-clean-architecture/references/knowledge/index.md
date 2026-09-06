@@ -32,7 +32,9 @@ Examples: `components/menu-bar/index.jsx`, `services/tmdb/index.ts`, and `entiti
 
 ## Layouts
 
-Layouts define the standard HTML document shell and reusable frame-level elements shared across screens, from `DOCTYPE` through `<body>`.
+Layouts define the standard HTML document shell and compose reusable frame-level elements shared across screens, from `DOCTYPE` through `<body>`.
+
+Like Domains, layouts must contain little HTML detail. Keep only the document shell, minimal structural wrappers, slots or children, and component composition inline. Extract detailed markup for headers, navigation, footers, and other meaningful blocks into components, preferring cohesive Section Components. Components reused across domains belong in `shared/components/<component-name>/index`; keep layout files flat in `layouts/`.
 
 - Keep layout files directly inside `layouts/`.
 - Do not create nested layout folders for layout variants.
@@ -43,7 +45,7 @@ Layouts define the standard HTML document shell and reusable frame-level element
 A domain represents one screen or page. It owns every abstraction required by that screen when the abstraction is domain-specific.
 
 - Domain-local components use `components/<component-name>/index`.
-- Atomic components that exist only inside one section may be nested in that section's folder.
+- Existing atomic components scoped to one section may remain nested in that section's folder; this placement rule does not justify new extraction without reuse by other components.
 - Atomic components reused by multiple sections may be placed beside the section folders.
 - Domain-local constants use semantic flat files directly inside `constants/`.
 - Domain-local entities use semantic files directly inside `entities/`. JSON adapters such as `map-show` belong to the corresponding entity.

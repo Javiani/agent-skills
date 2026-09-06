@@ -31,6 +31,8 @@ When a rule is unclear, do not invent one; keep the implementation minimal and a
 14. A Domain entry point exports one public root component; secondary UI components live in their own `components/<component-name>/index` entry points.
 15. Components that depend on shared store state consume it through the selected framework's store adapter, or through the framework-agnostic `@javiani/onijs` vanilla API when no framework adapter exists; do not drill store state through the Domain merely to reach descendants.
 16. Use props for explicit inputs, local composition, or derived values, not as a transport path for shared store state.
+17. Keep layouts and domains focused on composition with minimal structural HTML; extract detailed markup into components.
+18. Prefer Section Components that group a meaningful horizontal context. Split them into smaller components only when those parts are needed for reuse by other components in the system.
 
 ## Required reading before implementation
 
@@ -60,7 +62,8 @@ Use this sequence for every implementation task:
 
 ### Layouts
 When creating or modifying a layout:
-- keep the standard HTML shell and reusable frame-level structure in `layouts/`
+- keep only the standard HTML shell, minimal structural wrappers, and frame-level composition in `layouts/`
+- extract detailed frame markup into components, preferably cohesive Section Components such as headers and footers; import and compose them in the layout
 - do not blur layout concerns into domain logic
 - preserve the architecture's separation between layout shell and domain page composition
 - store layouts as flat files (e.g., `default.tsx`, `admin.tsx`) without deep nested folders
@@ -84,7 +87,8 @@ When creating or modifying a shared abstraction:
 
 ### Components
 When creating or modifying a component:
-- decide whether it is a section component or an atomic component
+- default to a Section Component that keeps contextually related elements together as a meaningful horizontal block
+- extract smaller atomic components only for concrete reuse by other components; file length, isolated HTML elements, or speculative reuse alone do not justify splitting a section
 - if it is a section component, keep it purpose-specific and standalone, folder-organized under `components/` with a semantic folder name and an `index` entry point
 - give each Section Component its own entry point and one public component export
 - if it is an atomic component used only within one section component, place it in a subfolder within that section component's folder
@@ -171,6 +175,8 @@ Review for architecture adherence by checking:
 - Is each screen still a domain with clear inputs and outputs?
 - Does each domain `index` file export only one public root component?
 - Do state-dependent components consume shared state through the framework adapter instead of receiving it through prop drilling?
+- Do layouts and domains compose components with only minimal structural HTML?
+- Do Section Components keep related elements together, with smaller components extracted only for concrete reuse by other components?
 - Are section components still isolated from sibling sections?
 - Are constants still centralized and properly named?
 - Are framework route files used as integrations rather than as the architecture definition?
