@@ -17,16 +17,17 @@ skills/
     └── references/
 ```
 
-Add future skills as sibling directories under `skills/`. Do not share implementation instructions implicitly between skills; each package must remain independently installable.
+## Quick Start
 
-## Install a skill with Codex
-
-Ask Codex to use `$skill-installer`, or run:
+**Fastest path — any agent, one command.** The open [skills CLI](https://github.com/vercel-labs/skills) installs into 70+ agents (Claude Code, Cursor, Codex, Copilot, Cline, and more):
 
 ```bash
-python3 ~/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py \
-  --repo Javiani/agent-skill-ui-clean-architecture \
-  --path skills/ui-clean-architecture
+npx skills add javiani/agent-skills            # install all skills
+npx skills add javiani/agent-skills --list     # browse before installing
 ```
 
-The installed skill is available from the next task as `$ui-clean-architecture`.
+Or grab individual skills:
+
+```bash
+npx skills add javiani/agent-skills --skill ui-clean-architecture
+```
