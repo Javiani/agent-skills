@@ -33,6 +33,11 @@ When a rule is unclear, do not invent one; keep the implementation minimal and a
 16. Use props for explicit inputs, local composition, or derived values, not as a transport path for shared store state.
 17. Keep layouts and domains focused on composition with minimal structural HTML; extract detailed markup into components.
 18. Prefer Section Components that group a meaningful horizontal context. Split them into smaller components only when those parts are needed for reuse by other components in the system.
+19. Apply the code readability standard to all project code and every code snippet: consistent indentation, explanatory comments, clear naming and structure, and no compressed one-liners.
+
+## Code readability
+
+Apply this requirement to all code written, modified, reviewed, or presented as an example, regardless of architectural layer or language. Follow the readability standard in `references/knowledge/index.md`: use consistent indentation, include comments explaining intent and relevant decisions, and prefer explicit multiline blocks over one-liners. Keep names descriptive and separate logical steps so the code is easy to follow. Comments should clarify purpose, behavior, or constraints rather than merely repeat the syntax.
 
 ## Required reading before implementation
 
@@ -170,6 +175,7 @@ When refactoring:
 
 ### Review a pull request
 Review for architecture adherence by checking:
+- Is all code consistently indented, clearly structured, and accompanied by explanatory comments, with compressed one-liners expanded into readable blocks?
 - Is the structure still `layouts` / `domains` / `shared`?
 - Are the documented sub-structures still respected for components, constants, entities, and services when applicable?
 - Is each screen still a domain with clear inputs and outputs?

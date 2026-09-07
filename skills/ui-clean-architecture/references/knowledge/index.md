@@ -8,6 +8,16 @@ The architecture has two parts:
 - Folder structure: defines where each abstraction must live.
 - Abstractions: defines the responsibilities and boundaries of the application's parts.
 
+# Code Readability
+
+All project code and every code snippet must follow this standard, including implementations, modifications, and documentation examples across every architectural layer and language:
+
+- Use consistent indentation that makes nesting and scope clear, following the project's indentation convention.
+- Include explanatory comments that describe intent, behavior, relevant decisions, and constraints. Keep comments accurate as code changes and avoid comments that merely repeat the syntax.
+- Use descriptive names, clear control flow, and spacing between logical steps.
+- Avoid one-liners that compress functions, callbacks, conditionals, loops, or multiple operations into a single line. Prefer explicit multiline blocks, with each logical step easy to read.
+- Preserve cohesive Section Components; improving readability does not justify extracting smaller components without concrete reuse.
+
 # Abstractions
 
 - [Domains](./domain/index.md)
