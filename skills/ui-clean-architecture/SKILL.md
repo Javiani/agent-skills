@@ -1,6 +1,6 @@
 ---
 name: ui-clean-architecture
-description: Enforces the UI Clean Architecture described in references/knowledge/ for screen-oriented front-end implementations.
+description: Enforces the UI Clean Architecture described in references/knowledge/ for screen-oriented front-end implementations and refactoring existing front-end applications.
 ---
 
 # UI Clean Architecture Skill
@@ -165,13 +165,101 @@ Before modifying a feature:
 3. Preserve the architecture's domain boundary and section independence.
 4. Do not relocate local screen logic into shared abstractions unless the architecture explicitly supports reuse across domains.
 
-### Refactor code
-When refactoring:
-1. Maintain the legal structure: layouts, domains, shared, components, constants, entities, and services.
-2. Prefer reducing duplication without changing architectural ownership.
-3. Keep domains standalone.
-4. Keep section-to-section coupling forbidden.
-5. Do not preserve a confusing structure just because it works in one framework.
+### Refactor an existing application
+Use this workflow when an application already exists and its current folders or components do not clearly express the architecture. Refactoring means making responsibilities and boundaries explicit while preserving the application's user-visible behavior. Do not redesign the interface, replace the framework, or rewrite working code unless the requested change requires it.
+
+#### 1. Discover screens and user flows
+
+Start from the application's actual screens and flows, not from its folder names. Inspect routes, page components, layouts, rendered markup, tests, and available browser behavior as needed. Treat each meaningful screen or page as a candidate Domain.
+
+For each screen, separate:
+
+- UI structure: visual hierarchy, sections, content, and reusable visual elements.
+- Behavior: events, state transitions, data loading, persistence, navigation, communication, and external effects.
+
+Use the smallest nearby check that can disconfirm the interpretation, such as a route test, existing component test, type check, or browser render. If a file only forwards or registers behavior, follow the call path to the nearest code that directly renders, mutates, or controls it.
+
+#### 2. Identify the Domain root
+
+For each discovered screen, identify the framework-level route, page, view, or screen component that currently represents it. Adapt that entry point to integrate the corresponding Domain. Route files remain framework integration points; they must not become the architecture itself.
+
+Record the Domain's required inputs and outputs before moving code. Keep route parameter resolution, framework lifecycle concerns, and page integration at the framework boundary, while screen composition and coordination belong to the Domain.
+
+#### 3. Extract static UI structure first
+
+Refactor from the outside in:
+
+`Screens -> UI structure -> Section Components -> behavior -> architectural responsibilities -> communication -> infrastructure`
+
+Before moving business behavior, extract the meaningful visual blocks into Section Components. Prefer cohesive horizontal contexts with their own purpose, content, controls, or loading/empty state. Preserve the existing markup and visual output. Do not split a section into atomic components for file length or hypothetical reuse; extract an Atomic Component only when concrete reuse requires it.
+
+Keep the Domain responsible for composition and screen-level coordination. Keep detailed section markup inside the corresponding component entry point, and do not define secondary UI components in the Domain `index` file.
+
+#### 4. Assign behavior to its owner
+
+After the static composition is stable, trace each interaction and state transition to the smallest component or architectural abstraction that owns it.
+
+- Keep event handling and exclusively local state in the owning component, using the existing framework idioms.
+- Use the screen's single store when state must be shared between components in one Domain.
+- Let state-dependent components consume the store through the framework adapter directly; do not pass shared store state through the Domain or unrelated intermediate components.
+- Keep screen-level orchestration in the Domain and route lifecycle integration at the framework boundary.
+
+Do not introduce global state or cross-component coordination when local state or direct Domain composition is sufficient.
+
+#### 5. Classify responsibilities using the existing abstractions
+
+Classify code by what it does, not by its current filename. Keep the legal structure limited to the documented architecture:
+
+- Rendering and local interaction belong to Components.
+- Screen composition and coordination belong to the Domain.
+- Shared screen state belongs to the Domain's `store/index.ts` and follows the documented `@javiani/onijs` contract.
+- Raw payload adaptation belongs to Entities.
+- HTTP, API, fetch, analytics, and other stateless external communication belong to Services.
+- Fixed or derived values belong to Constants.
+- Cross-domain abstractions belong to Shared; screen-specific abstractions remain in the Domain.
+- Document shell and frame-level composition belong to Layouts.
+
+Do not invent controllers, repositories, use-case layers, persistence layers, or other abstractions that are not defined by the knowledge files. Preserve framework-native mechanisms where they fit these responsibilities.
+
+#### 6. Normalize communication and infrastructure
+
+Inspect existing props, callbacks, context, event systems, global stores, shared mutable state, and direct component references. Replace unnecessary transport paths with the smallest valid communication scope:
+
+- use props for explicit inputs, local composition, and derived values;
+- use the Domain to compose independent Section Components;
+- use the Domain store and its adapter for shared state within one screen;
+- use Shared only for behavior or abstractions reused by multiple Domains.
+
+Move HTTP, browser storage, databases, caching, SDK calls, analytics, and platform integrations behind the appropriate documented boundary. Services remain stateless and return entities or arrays of entities. Persistence remains outside store actions and is handled through the documented subscriber mechanism or another existing infrastructure boundary that fits the knowledge model. Preserve external contracts whenever possible.
+
+#### 7. Refactor one coherent unit at a time
+
+For each Domain, Section Component, behavior, or dependency:
+
+1. Identify its current responsibility and destination.
+2. Move or adapt the smallest useful unit.
+3. Update imports and communication paths.
+4. Verify the behavior before removing the old implementation.
+5. Remove obsolete files, duplicate implementations, and migration leftovers only after the replacement is working.
+
+Do not perform a broad speculative rewrite. Preserve working code when it already satisfies the relevant boundary.
+
+#### 8. Validate continuously and audit the result
+
+After every meaningful step, run the narrowest available validation for the changed slice, such as a focused test, type check, lint check, build, or browser render. Fix regressions before moving to the next unit.
+
+At the end, verify all of the following:
+
+- each meaningful screen is represented by a standalone Domain;
+- route files integrate Domains instead of defining the architecture;
+- Section Components own meaningful UI blocks and do not depend directly on sibling sections;
+- each Domain entry point exports only its public root component;
+- behavior and state live at the smallest appropriate scope;
+- shared state uses the documented store and adapter rules;
+- Entities, Services, Constants, Layouts, and Shared abstractions have the documented responsibilities;
+- dependencies and component communication do not introduce unnecessary coupling;
+- existing functionality and user-visible behavior remain intact;
+- obsolete architecture, duplicated code, unused imports, and temporary migration code are removed.
 
 ### Review a pull request
 Review for architecture adherence by checking:
