@@ -2,6 +2,8 @@
 
 Services handle external communication, api and fetch calls, such as making requests to endpoints (GET, POST, UPDATE, DELETE) or tracking analytics. They should always return promises of entities and remain stateless.
 
+Service input, output, and application-owned transport types belong in the parent Domain's or Shared abstraction's root `types.ts`. Import them into the service; do not define service-local application types.
+
 2 important rules to follow to be consistent and predictable:
 
 - It should always return Promise<Entity> | Promise<Entity[]>

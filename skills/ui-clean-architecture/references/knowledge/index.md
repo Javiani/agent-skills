@@ -37,8 +37,21 @@ At the first level of each abstraction:
 
 - `components` and `services` use one semantic folder per abstraction with an `index` file.
 - `constants` and `entities` use semantic files directly inside their folders.
+- A parent abstraction with TypeScript types has one `types.ts` at its root. Centralize its types there for the abstraction and all nested components, stores, services, and entities; do not create nested `types.ts` files.
 
 Examples: `components/menu-bar/index.jsx`, `services/tmdb/index.ts`, and `entities/product.ts`.
+
+## Type Organization
+
+Centralize application-owned TypeScript types in `types.ts` at the root of their parent abstraction:
+
+- Domain types belong in `domains/<domain-name>/types.ts`.
+- Cross-domain types belong in `shared/types.ts`.
+- Layout types belong in `layouts/types.ts` when layouts need application-owned types.
+- Components, stores, services, and entities import their types from the owning parent abstraction's `types.ts`; do not colocate or duplicate type declarations in nested folders.
+- Use TypeScript `type` aliases for these declarations.
+
+Create `types.ts` only when the abstraction has types to centralize. Framework and external-library types remain imported from their packages rather than being copied into the application file.
 
 ## Layouts
 
@@ -47,6 +60,7 @@ Layouts define the standard HTML document shell and compose reusable frame-level
 Like Domains, layouts must contain little HTML detail. Keep only the document shell, minimal structural wrappers, slots or children, and component composition inline. Extract detailed markup for headers, navigation, footers, and other meaningful blocks into components, preferring cohesive Section Components. Components reused across domains belong in `shared/components/<component-name>/index`; keep layout files flat in `layouts/`.
 
 - Keep layout files directly inside `layouts/`.
+- Keep layout-level types in `layouts/types.ts`, not in individual layout files.
 - Do not create nested layout folders for layout variants.
 - Examples include `default.[jsx, tsx, astro, svelte]` and `admin.[jsx, tsx, astro, svelte]`.
 
@@ -55,6 +69,7 @@ Like Domains, layouts must contain little HTML detail. Keep only the document sh
 A domain represents one screen or page. It owns every abstraction required by that screen when the abstraction is domain-specific.
 
 - Domain-local components use `components/<component-name>/index`.
+- All domain-owned TypeScript types are centralized in the domain-root `types.ts`, including types used by nested stores, entities, services, and components.
 - Existing atomic components scoped to one section may remain nested in that section's folder; this placement rule does not justify new extraction without reuse by other components.
 - Atomic components reused by multiple sections may be placed beside the section folders.
 - Domain-local constants use semantic flat files directly inside `constants/`.
@@ -69,15 +84,18 @@ The Domain entry point should expose one public root component. Secondary UI com
 ## Shared
 
 `shared/` stores abstractions reused across domains. It follows the same folder structure as a domain, but its contents are cross-domain abstractions rather than screen-specific abstractions.
+All shared TypeScript types are centralized in `shared/types.ts` and imported by nested shared components or services.
 
 # Example
 
 .
 └── src/
     ├── layouts/
-    │   └── default.[tsx,astro,svelte]
+    │   ├── default.[tsx,astro,svelte]
+    │   └── types.ts
     ├── domains/
     │   └── home/
+    │       ├── types.ts
     │       ├── components/
     │       │   ├── header/
     │       │   │   └── index[tsx,astro,svelte]
@@ -90,6 +108,7 @@ The Domain entry point should expose one public root component. Secondary UI com
     │       │   └── ...
     │       └── index[tsx,astro,svelte]
     └── shared/
+        ├── types.ts
         ├── components/
         └── constants/
 

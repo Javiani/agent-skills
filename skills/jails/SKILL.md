@@ -49,7 +49,7 @@ Add JavaScript behavior to Custom Elements and existing HTML. Preserve the proje
 - Do not declare variables or write branching logic inside the `main` callback. Extract conditions such as redirect guards into named arrow helpers and call those helpers directly from `main`.
 - Declare component-specific helpers as arrow-function constants inside the default controller, immediately after the `main` registration. Keep handlers, validation, and application rules in the component's scope instead of at module scope.
 - Use the controller's closure instead of forwarding values as helper parameters. Declare values used by multiple helpers before `main` and reuse them directly; declare a value inside the helper when only that helper needs it. Avoid passing component state, the root element, or step context through redundant helper arguments.
-- Place an arrow function outside the controller only when it is a genuinely reusable, side-effect-free utility; otherwise keep it inside the component.
+- Place an arrow function outside the controller only when it is a genuinely reusable, side-effect-free utility; put such module-level utilities after exported component functions at the bottom of the file. Keep closure-bound helpers inside their controller, following the component ordering above.
 - Jails invokes the `main` callback after mounting. This allows helpers declared immediately after `main(...)` to be called safely by its callback without moving component behavior outside the component scope.
 
 ## Scope and provenance

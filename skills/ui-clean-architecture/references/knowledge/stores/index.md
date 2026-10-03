@@ -10,6 +10,12 @@ Stores manage state persistence and communication between components within one 
 - Components capture system events, user actions, and page lifecycle events, then dispatch actions to the store.
 - The store keeps state in memory. Persistence to `sessionStorage`, `localStorage`, or another medium is an explicit side effect handled outside actions.
 - A component that consumes shared screen state must connect to the store directly through the appropriate framework adapter. Do not pass shared state through the Domain only to reach descendant components.
+- Store state and action types belong in the parent Domain's or Shared abstraction's root `types.ts`, not in `store/index.ts` or `store/types.ts`. Import those types into the store module.
+- In TypeScript store modules, declare structures with `type` aliases rather than `interface` declarations, and use arrow functions throughout instead of `function` declarations.
+- Write every action as a multiline arrow-function block with an explicit `return`; do not use expression-bodied one-line actions.
+- Name the first parameter of every action `state`, never `_`. Use it to form the next state and preserve unaffected fields where appropriate, rather than silencing an unused parameter.
+- Do not use the JavaScript `void` operator as a statement to discard promises or silence unused values. Use `void` only in TypeScript type positions, such as a function return type.
+- Place module-level utility arrow functions below the exported store and subscriber declarations at the bottom of the file. Keep the public API and primary behavior visible before implementation-detail helpers.
 
 ## Oni API contract
 
@@ -22,7 +28,7 @@ Use the vanilla `@javiani/onijs` API according to this contract:
 - `store.subscribe(callback)` accepts one function, not an action-to-callback object.
 - A subscriber callback receives `(state, metadata)`, where `metadata` contains `action` and `payload`.
 - `subscribe` returns an unsubscribe function.
-- Define `initialState` as a named constant.
+- Define `initialState` as a named camelCase constant. This is an intentional exception to the general `SCREAMING_SNAKE_CASE` naming rule for constants.
 - Define the actions object inline in the `Oni` or `createStore` call. Do not extract it into a separate constant.
 
 ```ts
@@ -52,24 +58,51 @@ Apply these rules to every action:
 4. By default, keep actions pure: calculate and return the next partial state.
 
 ```ts
-type CatalogActions = {
+// domains/catalog/types.ts
+export type CatalogMovie = {
+  id: number
+  title: string
+}
+
+export type CatalogState = {
+  movies: CatalogMovie[]
+  favorites: number[]
+}
+
+export type CatalogActions = {
   SET_MOVIES: (
     state: CatalogState,
-    payload: { movies: Movie[] },
+    payload: { movies: CatalogMovie[] },
   ) => Partial<CatalogState>
   TOGGLE_FAVORITE: (
     state: CatalogState,
     payload: { id: number },
   ) => Partial<CatalogState>
 }
+```
+
+```ts
+// domains/catalog/store/index.ts
+import Oni from '@javiani/onijs'
+import type { CatalogActions, CatalogState } from '../types'
 
 const store = Oni<CatalogState, CatalogActions>(initialState, {
-  SET_MOVIES: (_, { movies }) => ({ movies }),
-  TOGGLE_FAVORITE: (state, { id }) => ({
-    favorites: state.favorites.includes(id)
+  SET_MOVIES: (state, { movies }) => {
+    return {
+      ...state,
+      movies,
+    }
+  },
+  TOGGLE_FAVORITE: (state, { id }) => {
+    const favorites = state.favorites.includes(id)
       ? state.favorites.filter((favoriteId) => favoriteId !== id)
-      : [...state.favorites, id],
-  }),
+      : [...state.favorites, id]
+
+    return {
+      ...state,
+      favorites,
+    }
+  },
 })
 
 store.dispatch('SET_MOVIES', { movies })
@@ -87,11 +120,20 @@ Prefer resolving external requests in a service and passing the resulting promis
 const initialState = { items: [], loading: false }
 
 const store = Oni(initialState, {
-  LOAD_ITEMS: (_, { itemsPromise }, { dispatch }) => {
+  LOAD_ITEMS: (state, { itemsPromise }, { dispatch }) => {
     itemsPromise.then((items) => dispatch('SET_ITEMS', { items }))
-    return { loading: true }
+    return {
+      ...state,
+      loading: true,
+    }
   },
-  SET_ITEMS: (_, { items }) => ({ items, loading: false }),
+  SET_ITEMS: (state, { items }) => {
+    return {
+      ...state,
+      items,
+      loading: false,
+    }
+  },
 })
 ```
 
@@ -119,26 +161,28 @@ store.subscribe((state, { action }) => {
 
 Use a subscriber that persists after every action only when persisting the entire state after every change is intentional. Otherwise, always filter with `switch (action)`. Do not try to filter actions by passing an object to `subscribe`.
 
-When initial state must be restored from storage, read and validate the stored value before creating the store. Guard browser-only APIs when server rendering is possible.
+When initial state must be restored from storage, read it before creating the store. For trusted app-owned session data in a client-only application, read the storage key once and use a single ternary to parse the stored value or choose the default state. Avoid redundant presence checks, shape checks, and catch blocks for this narrow case. Keep the browser API guard when the module can execute during server rendering.
 
 ```ts
 const STORAGE_KEY = 'store-data'
-
-const savedState = typeof window === 'undefined'
-  ? null
-  : JSON.parse(localStorage.getItem(STORAGE_KEY) ?? 'null')
-
-const initialState = savedState ?? {
+const savedState = sessionStorage.getItem(STORAGE_KEY)
+const initialState = savedState ? JSON.parse(savedState) : {
   counter: 0,
 }
 
 export const store = Oni(initialState, {
-  COUNTER_ADD: (state, { increment = 1 }) => ({
-    counter: state.counter + increment,
-  }),
-  COUNTER_SUBTRACT: (state, { decrement = 1 }) => ({
-    counter: state.counter - decrement,
-  }),
+  COUNTER_ADD: (state, { increment = 1 }) => {
+    return {
+      ...state,
+      counter: state.counter + increment,
+    }
+  },
+  COUNTER_SUBTRACT: (state, { decrement = 1 }) => {
+    return {
+      ...state,
+      counter: state.counter - decrement,
+    }
+  },
 })
 
 store.subscribe((state, { action }) => {
@@ -152,6 +196,8 @@ store.subscribe((state, { action }) => {
   }
 })
 ```
+
+Keep the storage read and fallback concise. Add parsing or runtime validation only when data can be malformed or untrusted, and do not add multiple checks for the same stored value.
 
 ## Vanilla store instance
 
@@ -185,7 +231,12 @@ import Oni from '@javiani/onijs'
 const initialState = { items: [] }
 
 export const store = Oni(initialState, {
-  SET_ITEMS: (_, { items }) => ({ items }),
+  SET_ITEMS: (state, { items }) => {
+    return {
+      ...state,
+      items,
+    }
+  },
 })
 
 store.subscribe((state, { action }) => {
@@ -217,12 +268,18 @@ const initialState = {
 }
 
 export const { store, useStore } = createStore(initialState, {
-  COUNTER_ADD: (state, { increment = 1 }) => ({
-    counter: state.counter + increment,
-  }),
-  COUNTER_SUBTRACT: (state, { decrement = 1 }) => ({
-    counter: state.counter - decrement,
-  }),
+  COUNTER_ADD: (state, { increment = 1 }) => {
+    return {
+      ...state,
+      counter: state.counter + increment,
+    }
+  },
+  COUNTER_SUBTRACT: (state, { decrement = 1 }) => {
+    return {
+      ...state,
+      counter: state.counter - decrement,
+    }
+  },
 })
 ```
 

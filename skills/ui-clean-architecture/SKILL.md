@@ -34,10 +34,11 @@ When a rule is unclear, do not invent one; keep the implementation minimal and a
 17. Keep layouts and domains focused on composition with minimal structural HTML; extract detailed markup into components.
 18. Prefer Section Components that group a meaningful horizontal context. Split them into smaller components only when those parts are needed for reuse by other components in the system.
 19. Apply the code readability standard to all project code and every code snippet: consistent indentation, explanatory comments, clear naming and structure, and no compressed one-liners.
+20. Centralize application-owned TypeScript types in one `types.ts` at the root of their parent abstraction; nested components, stores, services, and entities import from that file instead of defining or duplicating local types.
 
 ## Code readability
 
-Apply this requirement to all code written, modified, reviewed, or presented as an example, regardless of architectural layer or language. Follow the readability standard in `references/knowledge/index.md`: use consistent indentation, include comments explaining intent and relevant decisions, and prefer explicit multiline blocks over one-liners. Keep names descriptive and separate logical steps so the code is easy to follow. Comments should clarify purpose, behavior, or constraints rather than merely repeat the syntax.
+Apply this requirement to all code written, modified, reviewed, or presented as an example, regardless of architectural layer or language. Follow the readability standard in `references/knowledge/index.md`: use consistent indentation, include comments explaining intent and relevant decisions, and prefer explicit multiline blocks over one-liners. Keep names descriptive and separate logical steps so the code is easy to follow. Comments should clarify purpose, behavior, or constraints rather than merely repeat the syntax. Put module-level utility arrow functions below exported functions and primary exports, at the end of the file, so the public API is encountered first. Keep component-scoped helpers inside their owner when they depend on its closure.
 
 ## Required reading before implementation
 
@@ -47,6 +48,7 @@ Before creating or modifying architecture-aware code, inspect the relevant archi
 - `references/knowledge/domain/index.md` for domain responsibilities and standalone screen behavior
 - `references/knowledge/components/index.md` for section/atomic component boundaries and behavior
 - `references/knowledge/constants/index.md` for constant organization and naming rules
+- `types.ts` at the root of each parent abstraction for all application-owned TypeScript types used by its nested parts
 - `references/knowledge/entities/index.md` for entity factory/adaptation rules
 - `references/knowledge/services/index.md` for stateless service responsibilities and return contracts
 - `references/knowledge/stores/index.md` for store contracts, framework adapters, and state subscription rules when the screen uses shared state
@@ -90,7 +92,6 @@ When creating or modifying a shared abstraction:
 - mirror the same structural discipline as the domain abstraction, including shared `components/`, `constants/`, `entities/`, and `services/` when applicable
 - do not move domain-local code into shared just because it is reusable in one screen
 
-### Components
 When creating or modifying a component:
 - default to a Section Component that keeps contextually related elements together as a meaningful horizontal block
 - extract smaller atomic components only for concrete reuse by other components; file length, isolated HTML elements, or speculative reuse alone do not justify splitting a section
@@ -129,11 +130,18 @@ When creating or modifying a service:
 - Keep at most one store per screen and place it at `store/index.ts` within that screen's domain.
 - In React, use `@javiani/onijs/react` and `useStore()` in state-dependent components; do not use the vanilla subscriber to trigger React renders.
 - In non-React applications, use the framework-agnostic `@javiani/onijs` API and connect `getState`, `dispatch`, and `subscribe` to the framework's own reactive mechanism.
-- Keep `initialState` in a named constant and declare the actions object inline in the `Oni` or `createStore` call; do not extract actions into a separate constant.
+- In TypeScript stores, define structures with `type` aliases, not `interface` declarations. Use arrow functions throughout the store module; do not declare functions with the `function` keyword.
+- Name the initial state constant `initialState` in camelCase, even though other fixed constants use `SCREAMING_SNAKE_CASE`.
+- For client-side restoration of trusted session state, read the storage value once and initialize `initialState` with a single ternary that parses the stored value or returns the default state. Avoid redundant checks and defensive parsing layers for this app-owned value. Retain browser guards when the module can execute during server rendering.
+- Declare the actions object inline in the `Oni` or `createStore` call; do not extract actions into a separate constant.
+- Write every action as a multiline arrow-function block with an explicit `return`; do not compress actions into expression-bodied one-liners.
+- Name the first action parameter `state`, never `_`, even when the transition could be written without it. Use `state` when forming the next state and preserve unaffected fields where appropriate.
 - Name every action in `SCREAMING_SNAKE_CASE` and pass payloads as objects with named properties, including single-value payloads.
 - Keep actions pure by default. An action may use the third-argument `{ dispatch }` helper to make an asynchronous transition explicit by dispatching another action.
 - Never perform local or session persistence inside an action. Register persistence outside the actions with `store.subscribe`.
 - Filter subscriber side effects by the received action with `switch (action)` when only specific actions should trigger them.
+- Place module-level utility arrow functions, such as persistence helpers, after the exported store and subscriber declarations at the bottom of the file. Do not put implementation-detail utilities before the store's public API.
+- Do not use the JavaScript `void` operator as a statement to discard promises or silence unused values. Use `void` only as a TypeScript type annotation, such as a function return type.
 
 ### Constants
 When creating or modifying constants:

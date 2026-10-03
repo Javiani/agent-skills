@@ -24,6 +24,8 @@ The implementation must use the component directory convention:
 domains/<domain-name>/components/<section-name>/index.tsx
 ```
 
+Component props, events, and other application-owned TypeScript types belong in the parent Domain's `types.ts`. Do not declare or colocate component-specific type aliases in a component file or nested `types.ts` file.
+
 For example, a screen introduction belongs in `components/screen-intro/index.tsx` and keeps its heading, description, input, and action markup together. Extract a `SearchField` or `ActionButton` only when another component needs that UI unit, or compose an existing reusable component when one already fits.
 
 The Section Component owns the markup and visual composition of that section. When it depends on shared screen state, it should read that state through the store adapter available for the selected UI framework and dispatch its own events locally. Use props for explicit component inputs, local composition, and derived values that are not store state; do not pass the same store state through the Domain merely to reach descendants.

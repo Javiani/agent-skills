@@ -14,6 +14,7 @@ The naming convention is:
 The same entity conventions apply regardless of framework or rendering model. The entity is a pure adaptation boundary that transforms raw payloads into application-shaped values for React, Angular, Vue, Svelte, or any other UI stack.
 
 - The exported factory function is the public API of the entity file.
+- Entity structures and raw-payload types are declared in the parent Domain's or Shared abstraction's root `types.ts`. Import them into the entity; do not declare types in the entity file or add a nested `types.ts`.
 - Default parameters should be declared directly in the factory signature using destructuring.
 - Private helper functions exist only to support the entity transformation and should be placed below the exported factory.
 - Entities do not perform network communication or local persistence; they only adapt data.
@@ -25,9 +26,36 @@ Entity factories should prefer a destructured payload with explicit default valu
 
 This makes the contract obvious and keeps the entity framework-agnostic.
 
+Declare the raw payload and application result types in the parent abstraction's root `types.ts`:
+
+```ts
+// domains/movies/types.ts
+export type RawMovie = {
+  id?: number
+  title?: string
+  overview?: string
+  release_date?: string
+  vote_average?: number
+  poster_path?: string
+  backdrop_path?: string
+}
+
+export type MovieType = {
+  id: number
+  title: string
+  overview: string
+  release_date: string
+  vote_average: number
+  poster_path: string | null
+  backdrop_path: string | null
+}
+```
+
 Code Example:
 
 ```ts
+import type { ProductType } from '../types'
+
 /**
  * @Entity Product
  */
@@ -55,22 +83,6 @@ export const Product = ({
   },
 })
 
-export type ProductType = {
-  id: number
-  title: string
-  description: string
-  rating: number
-  stock: number
-  brand: string
-  category: string
-  image: string
-  price: {
-    raw: number
-    discount: string
-    formatted: string
-  }
-}
-
 /**
  * @Entity ProductPrice
  */
@@ -87,6 +99,8 @@ export const ProductPrice = ({
 For this project, the same pattern is applied as:
 
 ```ts
+import type { MovieType, RawMovie } from '../types'
+
 export const Movie = ({
   id = Number(-1),
   title = String('Untitled movie'),
@@ -104,16 +118,6 @@ export const Movie = ({
   poster_path: toImageUrl(poster_path),
   backdrop_path: toImageUrl(backdrop_path),
 })
-
-export type MovieType = {
-  id: number
-  title: string
-  overview: string
-  release_date: string
-  vote_average: number
-  poster_path: string | null
-  backdrop_path: string | null
-}
 ```
 
 This keeps the same factory-function structure used in the product example, while respecting the `Movie` / `MovieType` naming rule.
