@@ -10,7 +10,8 @@ Stores manage state persistence and communication between components within one 
 - Components capture system events, user actions, and page lifecycle events, then dispatch actions to the store.
 - The store keeps state in memory. Persistence to `sessionStorage`, `localStorage`, or another medium is an explicit side effect handled outside actions.
 - A component that consumes shared screen state must connect to the store directly through the appropriate framework adapter. Do not pass shared state through the Domain only to reach descendant components.
-- Store state and action types belong in the parent Domain's or Shared abstraction's root `types.ts`, not in `store/index.ts` or `store/types.ts`. Import those types into the store module.
+- Types used only by a store belong in `store/types.ts` and are imported by `store/index.ts`.
+- If a store type is also consumed by the Domain or another nested abstraction, place it in `types.ts` at the nearest common parent of those consumers. Keep other store-only types in `store/types.ts`.
 - In TypeScript store modules, declare structures with `type` aliases rather than `interface` declarations, and use arrow functions throughout instead of `function` declarations.
 - Write every action as a multiline arrow-function block with an explicit `return`; do not use expression-bodied one-line actions.
 - Name the first parameter of every action `state`, never `_`. Use it to form the next state and preserve unaffected fields where appropriate, rather than silencing an unused parameter.
@@ -58,7 +59,7 @@ Apply these rules to every action:
 4. By default, keep actions pure: calculate and return the next partial state.
 
 ```ts
-// domains/catalog/types.ts
+// domains/catalog/store/types.ts
 export type CatalogMovie = {
   id: number
   title: string
@@ -84,7 +85,7 @@ export type CatalogActions = {
 ```ts
 // domains/catalog/store/index.ts
 import Oni from '@javiani/onijs'
-import type { CatalogActions, CatalogState } from '../types'
+import type { CatalogActions, CatalogState } from './types'
 
 const store = Oni<CatalogState, CatalogActions>(initialState, {
   SET_MOVIES: (state, { movies }) => {

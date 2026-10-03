@@ -37,21 +37,21 @@ At the first level of each abstraction:
 
 - `components` and `services` use one semantic folder per abstraction with an `index` file.
 - `constants` and `entities` use semantic files directly inside their folders.
-- A parent abstraction with TypeScript types has one `types.ts` at its root. Centralize its types there for the abstraction and all nested components, stores, services, and entities; do not create nested `types.ts` files.
+- Put application-owned types in `types.ts` inside the specific abstraction that owns them. If multiple abstractions consume a type, place it in `types.ts` at their nearest common parent. Nested abstractions may each have their own `types.ts` for local types.
 
 Examples: `components/menu-bar/index.jsx`, `services/tmdb/index.ts`, and `entities/product.ts`.
 
 ## Type Organization
 
-Centralize application-owned TypeScript types in `types.ts` at the root of their parent abstraction:
+Place application-owned TypeScript types according to their consumers:
 
-- Domain types belong in `domains/<domain-name>/types.ts`.
-- Cross-domain types belong in `shared/types.ts`.
-- Layout types belong in `layouts/types.ts` when layouts need application-owned types.
-- Components, stores, services, and entities import their types from the owning parent abstraction's `types.ts`; do not colocate or duplicate type declarations in nested folders.
+- Types used only by one abstraction belong in that abstraction's `types.ts`, such as `domains/<domain-name>/store/types.ts`, `domains/<domain-name>/components/<component-name>/types.ts`, `domains/<domain-name>/services/<service-name>/types.ts`, or `domains/<domain-name>/entities/types.ts`.
+- When consumers span sibling abstractions, move the shared type to `types.ts` at their nearest common parent. For example, a type shared between a Domain root and its store belongs in `domains/<domain-name>/types.ts`; one shared by multiple domains belongs in `shared/types.ts`.
+- Layout-local types belong in `layouts/types.ts`; types shared between layouts and other abstractions belong in the nearest common parent that owns those consumers.
+- Do not centralize all types at the Domain or Shared root by default, and do not duplicate a type in multiple `types.ts` files.
 - Use TypeScript `type` aliases for these declarations.
 
-Create `types.ts` only when the abstraction has types to centralize. Framework and external-library types remain imported from their packages rather than being copied into the application file.
+Create `types.ts` only when that abstraction owns application types. Framework and external-library types remain imported from their packages rather than being copied into application files.
 
 ## Layouts
 
@@ -60,7 +60,7 @@ Layouts define the standard HTML document shell and compose reusable frame-level
 Like Domains, layouts must contain little HTML detail. Keep only the document shell, minimal structural wrappers, slots or children, and component composition inline. Extract detailed markup for headers, navigation, footers, and other meaningful blocks into components, preferring cohesive Section Components. Components reused across domains belong in `shared/components/<component-name>/index`; keep layout files flat in `layouts/`.
 
 - Keep layout files directly inside `layouts/`.
-- Keep layout-level types in `layouts/types.ts`, not in individual layout files.
+- Keep types used only by layouts in `layouts/types.ts`; lift types shared with other abstractions only to their nearest common parent.
 - Do not create nested layout folders for layout variants.
 - Examples include `default.[jsx, tsx, astro, svelte]` and `admin.[jsx, tsx, astro, svelte]`.
 
@@ -69,7 +69,7 @@ Like Domains, layouts must contain little HTML detail. Keep only the document sh
 A domain represents one screen or page. It owns every abstraction required by that screen when the abstraction is domain-specific.
 
 - Domain-local components use `components/<component-name>/index`.
-- All domain-owned TypeScript types are centralized in the domain-root `types.ts`, including types used by nested stores, entities, services, and components.
+- Put Domain-root types in `domains/<domain-name>/types.ts` only when the Domain itself uses them or they are shared across nested abstractions. Keep store-, component-, service-, and entity-local types in their own abstraction's `types.ts`.
 - Existing atomic components scoped to one section may remain nested in that section's folder; this placement rule does not justify new extraction without reuse by other components.
 - Atomic components reused by multiple sections may be placed beside the section folders.
 - Domain-local constants use semantic flat files directly inside `constants/`.
@@ -84,20 +84,19 @@ The Domain entry point should expose one public root component. Secondary UI com
 ## Shared
 
 `shared/` stores abstractions reused across domains. It follows the same folder structure as a domain, but its contents are cross-domain abstractions rather than screen-specific abstractions.
-All shared TypeScript types are centralized in `shared/types.ts` and imported by nested shared components or services.
+Put types used only by one Shared abstraction in that abstraction's `types.ts`. Use `shared/types.ts` for types shared across multiple Shared abstractions or between Shared and other consumers for which Shared is the nearest common parent.
 
 # Example
 
 .
 └── src/
     ├── layouts/
-    │   ├── default.[tsx,astro,svelte]
-    │   └── types.ts
+    │   └── default.[tsx,astro,svelte]
     ├── domains/
     │   └── home/
-    │       ├── types.ts
     │       ├── components/
     │       │   ├── header/
+    │       │   │   ├── types.ts
     │       │   │   └── index[tsx,astro,svelte]
     │       │   ├── hero/
     │       │   │   └── index[tsx,astro,svelte]
@@ -108,8 +107,10 @@ All shared TypeScript types are centralized in `shared/types.ts` and imported by
     │       │   └── ...
     │       └── index[tsx,astro,svelte]
     └── shared/
-        ├── types.ts
         ├── components/
+        │   └── progress-navigation/
+        │       ├── types.ts
+        │       └── index[tsx,astro,svelte]
         └── constants/
 
 

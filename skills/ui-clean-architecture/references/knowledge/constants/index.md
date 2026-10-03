@@ -36,3 +36,4 @@ The `SCREAMING_SNAKE_CASE` rule applies to both constant variables such as `HTTP
 - Group constants in semantic files.
 - Keep constant files flat inside `constants/`; do not create component-like nested folder structures.
 - System values may be derived from `process.env` when required.
+- Types used only by the Constants abstraction belong in `constants/types.ts`. If another abstraction consumes a type, place it at the nearest common parent of all its consumers.

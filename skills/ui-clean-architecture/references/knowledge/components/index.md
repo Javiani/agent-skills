@@ -24,7 +24,7 @@ The implementation must use the component directory convention:
 domains/<domain-name>/components/<section-name>/index.tsx
 ```
 
-Component props, events, and other application-owned TypeScript types belong in the parent Domain's `types.ts`. Do not declare or colocate component-specific type aliases in a component file or nested `types.ts` file.
+Component-specific props, events, and other application-owned types belong in `types.ts` inside that component's folder. If sibling components share a type, place it in `components/types.ts`; if consumers cross the Components abstraction, put it in `types.ts` at their nearest common parent. Do not default every component type to the Domain root.
 
 For example, a screen introduction belongs in `components/screen-intro/index.tsx` and keeps its heading, description, input, and action markup together. Extract a `SearchField` or `ActionButton` only when another component needs that UI unit, or compose an existing reusable component when one already fits.
 

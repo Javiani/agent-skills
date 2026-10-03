@@ -34,7 +34,7 @@ When a rule is unclear, do not invent one; keep the implementation minimal and a
 17. Keep layouts and domains focused on composition with minimal structural HTML; extract detailed markup into components.
 18. Prefer Section Components that group a meaningful horizontal context. Split them into smaller components only when those parts are needed for reuse by other components in the system.
 19. Apply the code readability standard to all project code and every code snippet: consistent indentation, explanatory comments, clear naming and structure, and no compressed one-liners.
-20. Centralize application-owned TypeScript types in one `types.ts` at the root of their parent abstraction; nested components, stores, services, and entities import from that file instead of defining or duplicating local types.
+20. Place application-owned TypeScript types in `types.ts` inside the specific abstraction that uses them. When multiple abstractions consume the same type, place it in `types.ts` at their nearest common parent; do not move all types to the Domain or Shared root by default.
 
 ## Code readability
 
@@ -48,7 +48,7 @@ Before creating or modifying architecture-aware code, inspect the relevant archi
 - `references/knowledge/domain/index.md` for domain responsibilities and standalone screen behavior
 - `references/knowledge/components/index.md` for section/atomic component boundaries and behavior
 - `references/knowledge/constants/index.md` for constant organization and naming rules
-- `types.ts` at the root of each parent abstraction for all application-owned TypeScript types used by its nested parts
+- the relevant `types.ts` files, choosing the owning abstraction's folder for local types and the nearest common parent for types shared across abstractions
 - `references/knowledge/entities/index.md` for entity factory/adaptation rules
 - `references/knowledge/services/index.md` for stateless service responsibilities and return contracts
 - `references/knowledge/stores/index.md` for store contracts, framework adapters, and state subscription rules when the screen uses shared state

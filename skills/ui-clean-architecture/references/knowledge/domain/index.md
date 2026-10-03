@@ -9,7 +9,7 @@ The Domain is the highest-level component of the screen. It contains the compone
 
 The Domain is a composition and coordination boundary, not the place for detailed markup of every screen block. Keep the Domain responsible for screen-level orchestration, loading screen data, and stacking Section Components vertically. Components that depend on shared screen state should read it through the store adapter available for the selected UI framework instead of receiving that state through the Domain. Put the HTML and visual details of each meaningful screen block in `components/<section-name>/index`.
 
-Centralize all application-owned TypeScript types for the Domain and its nested abstractions in `domains/<domain-name>/types.ts`. Components, stores, services, and entities must import their types from this file rather than declaring local types or adding nested `types.ts` files.
+Place Domain-owned types in `domains/<domain-name>/types.ts` when the Domain itself uses them or when they are shared by multiple nested abstractions. Types used only by a component, store, service, or entity belong in that abstraction's own `types.ts`. If a type has consumers in multiple abstractions, place it in `types.ts` at their nearest common parent; do not centralize every type at the Domain root.
 
 The Domain `index` file must export one public root component for the screen. Do not define additional named or private UI components in that file. Each secondary screen block, including a detail panel, dialog, drawer, or overlay, must be a Section Component in its own `components/<component-name>/index` module and be imported by the Domain root.
 

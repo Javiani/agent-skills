@@ -14,7 +14,8 @@ The naming convention is:
 The same entity conventions apply regardless of framework or rendering model. The entity is a pure adaptation boundary that transforms raw payloads into application-shaped values for React, Angular, Vue, Svelte, or any other UI stack.
 
 - The exported factory function is the public API of the entity file.
-- Entity structures and raw-payload types are declared in the parent Domain's or Shared abstraction's root `types.ts`. Import them into the entity; do not declare types in the entity file or add a nested `types.ts`.
+- Entity structures and raw-payload types used only by Entities belong in `entities/types.ts`. Import them into entity files; do not declare them inline in an entity file.
+- If an entity type is also consumed by a service, component, or store, move it to `types.ts` at the nearest common parent of those abstractions.
 - Default parameters should be declared directly in the factory signature using destructuring.
 - Private helper functions exist only to support the entity transformation and should be placed below the exported factory.
 - Entities do not perform network communication or local persistence; they only adapt data.
@@ -26,10 +27,10 @@ Entity factories should prefer a destructured payload with explicit default valu
 
 This makes the contract obvious and keeps the entity framework-agnostic.
 
-Declare the raw payload and application result types in the parent abstraction's root `types.ts`:
+Declare the raw payload and application result types in `entities/types.ts` when they are used only by entity adapters:
 
 ```ts
-// domains/movies/types.ts
+// domains/catalog/entities/types.ts
 export type RawMovie = {
   id?: number
   title?: string
@@ -49,12 +50,28 @@ export type MovieType = {
   poster_path: string | null
   backdrop_path: string | null
 }
+
+export type ProductType = {
+  id: number
+  title: string
+  description: string
+  rating: number
+  stock: number
+  brand: string
+  category: string
+  image: string
+  price: {
+    raw: number
+    discount: string
+    formatted: string
+  }
+}
 ```
 
 Code Example:
 
 ```ts
-import type { ProductType } from '../types'
+import type { ProductType } from './types'
 
 /**
  * @Entity Product
@@ -69,7 +86,7 @@ export const Product = ({
   category = String('No category'),
   image = String('No url for image'),
   ...rest
-} = {}) => ({
+} = {}): ProductType => ({
   id,
   title,
   description,
@@ -99,7 +116,7 @@ export const ProductPrice = ({
 For this project, the same pattern is applied as:
 
 ```ts
-import type { MovieType, RawMovie } from '../types'
+import type { MovieType, RawMovie } from './types'
 
 export const Movie = ({
   id = Number(-1),

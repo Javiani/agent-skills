@@ -2,7 +2,7 @@
 
 Services handle external communication, api and fetch calls, such as making requests to endpoints (GET, POST, UPDATE, DELETE) or tracking analytics. They should always return promises of entities and remain stateless.
 
-Service input, output, and application-owned transport types belong in the parent Domain's or Shared abstraction's root `types.ts`. Import them into the service; do not define service-local application types.
+Service-specific input, output, and application-owned transport types belong in `types.ts` inside the service folder. If those types are consumed by another abstraction, place them in `types.ts` at the nearest common parent of all consumers; do not move unrelated service types there.
 
 2 important rules to follow to be consistent and predictable:
 
