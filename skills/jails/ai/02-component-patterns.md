@@ -7,7 +7,9 @@ Choose patterns by the component's responsibility. Organization advice does not 
 Use `model` and `state.set` for one instance's expansion, selection, or loading state. Avoid an independent local copy of shared data that must stay consistent across consumers. Read with `state.get`; do not assume direct mutations of its result notify the view.
 
 ```js
-export const model = { expanded: false }
+export const model = {
+  expanded: false,
+}
 
 export default function disclosure({ main, on, state }) {
   main(() => {
@@ -37,7 +39,10 @@ A global `expanded` variable would incorrectly couple independent instances.
 Use `view` for formatting and calculated display values. Preserve fields needed by the template. Keep HTTP calls, external effects, and independently editable values out of `view`.
 
 ```js
-export const model = { quantity: 1, unitPrice: 20 }
+export const model = {
+  quantity: 1,
+  unitPrice: 20,
+}
 
 export const view = state => {
   // Derive the total so every price or quantity update stays consistent.
@@ -124,7 +129,9 @@ export default function search({ main, on, emit }) {
 Pair global subscriptions, timers, external listeners, and library instances with cleanup in `unmount`. Pure functions without resources need no cleanup infrastructure.
 
 ```js
-export const model = { items: [] }
+export const model = {
+  items: [],
+}
 
 export default function results({ main, subscribe, state, unmount }) {
   let unsubscribe

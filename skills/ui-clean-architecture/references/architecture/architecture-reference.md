@@ -3,10 +3,10 @@
 ## Vocabulary
 
 ### layouts
-Definition: The top-level folder that defines the system's standard HTML shell and cross-screen reused layout elements.
+Definition: The top-level folder that defines the system's standard HTML shell and minimal structural wrappers, and composes shared frame components when needed.
 Responsibilities:
-- store page shell boilerplate
-- centralize reusable frame-level structure
+- store page shell boilerplate and minimal structural wrappers
+- compose reusable frame components from shared
 - support standard page composition
 Relationships:
 - sits alongside domains and shared
@@ -99,14 +99,15 @@ Source Rules:
 
 ### Layouts
 Purpose:
-Provide the standard structural shell of the application and reusable cross-screen boilerplate.
+Provide the standard structural shell of the application and compose reusable cross-screen elements from Shared.
 Responsibilities:
 - define HTML shell pattern
-- contain cross-screen reusable layout elements
+- contain minimal structural wrappers
+- compose shared frame components when needed
 Can:
 - wrap a page or screen
-- host common layout structure
 Cannot:
+- own a components directory or detailed reusable UI components
 - replace a domain as the screen composition unit
 Depends on:
 - standard framework conventions for page wrappers

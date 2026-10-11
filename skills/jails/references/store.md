@@ -95,7 +95,9 @@ The store is distinct from the component's `state` helper. Name callback data `s
 ```js
 import { store } from './shared/store.js'
 
-export const model = { data: null }
+export const model = {
+  data: null,
+}
 
 export default function appComponentA({ main, state, unmount }) {
   let unsubscribe
@@ -136,7 +138,9 @@ start()
 Component module:
 
 ```js
-export const model = { data: null }
+export const model = {
+  data: null,
+}
 
 export default function appComponentA({ main, state, dependencies, unmount }) {
   const { store } = dependencies
@@ -163,7 +167,10 @@ Prefer static imports when the shared module is the intended dependency. Inject 
 ## Filter by action
 
 ```js
-export const model = { items: [], error: null }
+export const model = {
+  items: [],
+  error: null,
+}
 
 export default function appComponentA({ main, state, dependencies, unmount }) {
   const { store } = dependencies

@@ -55,9 +55,9 @@ Create `types.ts` only when that abstraction owns application types. Framework a
 
 ## Layouts
 
-Layouts define the standard HTML document shell and compose reusable frame-level elements shared across screens, from `DOCTYPE` through `<body>`.
+Layouts define the standard HTML document shell and minimal structural wrappers, from `DOCTYPE` through `<body>`. They may import and compose shared frame-level components, but they do not own a `components/` directory.
 
-Like Domains, layouts must contain little HTML detail. Keep only the document shell, minimal structural wrappers, slots or children, and component composition inline. Extract detailed markup for headers, navigation, footers, and other meaningful blocks into components, preferring cohesive Section Components. Components reused across domains belong in `shared/components/<component-name>/index`; keep layout files flat in `layouts/`.
+Keep only the document shell, minimal structural wrappers, slots or children, and imports/composition inline. Extract detailed markup for headers, navigation, footers, and other meaningful frame blocks into cohesive Section Components under `shared/components/<component-name>/index` when they are reused across domains. Keep layout files flat in `layouts/`; layout-owned components do not belong under `layouts/`.
 
 - Keep layout files directly inside `layouts/`.
 - Keep types used only by layouts in `layouts/types.ts`; lift types shared with other abstractions only to their nearest common parent.
@@ -85,6 +85,7 @@ The Domain entry point should expose one public root component. Secondary UI com
 
 `shared/` stores abstractions reused across domains. It follows the same folder structure as a domain, but its contents are cross-domain abstractions rather than screen-specific abstractions.
 Put types used only by one Shared abstraction in that abstraction's `types.ts`. Use `shared/types.ts` for types shared across multiple Shared abstractions or between Shared and other consumers for which Shared is the nearest common parent.
+Reusable frame components such as headers, navigation, and footers belong in `shared/components/` when they are used across domains, including when composed by a layout.
 
 # Example
 

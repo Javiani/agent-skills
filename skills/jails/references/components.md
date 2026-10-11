@@ -32,7 +32,9 @@ The component reference requires a controller and model. Export an explicit mode
 
 ```js
 // Each component instance starts with its own counter value.
-export const model = { counter: 0 }
+export const model = {
+  counter: 0,
+}
 ```
 
 A model function can receive `elm`, `initialState`, and `dependencies`:

@@ -42,7 +42,11 @@ export function createCatalogService({ fetchImpl, endpoint }) {
 
 ```js
 // features/catalog/product-list.js
-export const model = { products: [], loading: false, error: '' }
+export const model = {
+  products: [],
+  loading: false,
+  error: '',
+}
 
 export default function productList({ main, state, dependencies, unmount }) {
   const { catalogService } = dependencies

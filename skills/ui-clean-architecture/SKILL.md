@@ -69,8 +69,9 @@ Use this sequence for every implementation task:
 
 ### Layouts
 When creating or modifying a layout:
-- keep only the standard HTML shell, minimal structural wrappers, and frame-level composition in `layouts/`
-- extract detailed frame markup into components, preferably cohesive Section Components such as headers and footers; import and compose them in the layout
+- keep only the standard HTML shell, minimal structural wrappers, slots or children, and imports/composition in `layouts/`
+- do not create a `layouts/components/` directory or place detailed UI components under `layouts/`
+- put reusable frame components such as headers, navigation, and footers in `shared/components/<component-name>/index` when they are reused across domains, then import and compose them in the layout
 - do not blur layout concerns into domain logic
 - preserve the architecture's separation between layout shell and domain page composition
 - store layouts as flat files (e.g., `default.tsx`, `admin.tsx`) without deep nested folders
@@ -225,7 +226,7 @@ Classify code by what it does, not by its current filename. Keep the legal struc
 - HTTP, API, fetch, analytics, and other stateless external communication belong to Services.
 - Fixed or derived values belong to Constants.
 - Cross-domain abstractions belong to Shared; screen-specific abstractions remain in the Domain.
-- Document shell and frame-level composition belong to Layouts.
+- The document shell, minimal structural wrappers, and imports/composition of Shared frame components belong to Layouts.
 
 Do not invent controllers, repositories, use-case layers, persistence layers, or other abstractions that are not defined by the knowledge files. Preserve framework-native mechanisms where they fit these responsibilities.
 
@@ -312,7 +313,7 @@ When a framework is swapped:
 
 ## Quick reference
 
-- `layouts/`: page shell and reusable cross-screen frame
+- `layouts/`: page shell, minimal wrappers, and composition of shared frame components
 - `domains/`: screens/pages with local dependencies and composition
 - `shared/`: cross-domain reusable abstractions
 - `components/`: section and atomic UI blocks

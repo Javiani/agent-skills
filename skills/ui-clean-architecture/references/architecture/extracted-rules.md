@@ -24,14 +24,14 @@ Strength: MUST
 Source: references/knowledge/index.md
 
 Statement:
-Layouts define the standard HTML boilerplate and reused cross-screen elements.
+Layouts define the standard HTML shell and minimal structural wrappers; reusable cross-domain frame components belong in shared and are composed by layouts.
 
 Related:
 - layouts
 - shared UI
 
 Notes:
-The layout layer is described as the place for standard page shell logic.
+Layouts remain flat shell/composition files and do not own a components directory.
 
 ## RULE-003
 

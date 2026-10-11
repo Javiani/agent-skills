@@ -38,7 +38,9 @@ export default function choice({ main, on, emit }) {
 Ancestor module, `catalog.js`:
 
 ```js
-export const model = { selectedId: null }
+export const model = {
+  selectedId: null,
+}
 
 export default function catalog({ main, on, state }) {
   main(() => {
@@ -92,7 +94,9 @@ Keep coordinated data in its owning parent and update it with `state.set()`. Use
 Parent module, `parent-counter.js`:
 
 ```js
-export const model = { count: 0 }
+export const model = {
+  count: 0,
+}
 
 export default function parentCounter({ main, on, state }) {
   main(() => {
@@ -109,7 +113,9 @@ export default function parentCounter({ main, on, state }) {
 Child module, `child-counter.js`:
 
 ```js
-export const model = { count: 0 }
+export const model = {
+  count: 0,
+}
 
 export default function childCounter({ effect }) {
   effect(props => {
