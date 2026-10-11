@@ -48,6 +48,21 @@ Add JavaScript behavior to Custom Elements and existing HTML. Preserve the proje
 - Keep the `main` callback declarative and explicit: register event handlers first, then call the needed component helpers in order (for example, a route guard followed by field restoration). Do not reduce it to a single delegation to a generic initialization helper.
 - Do not declare variables or write branching logic inside the `main` callback. Extract conditions such as redirect guards into named arrow helpers and call those helpers directly from `main`.
 - Declare component-specific helpers as arrow-function constants inside the default controller, immediately after the `main` registration. Keep handlers, validation, and application rules in the component's scope instead of at module scope.
+- Above `main`, declare only variables holding plain values or values returned by an external function call (for example `const timers = new Set()` or `const observer = createObserver()`). Never declare functions there, including arrow functions or wrappers whose argument is an inline callback such as `throttle(() => ...)`. All function-valued constants, including those returned by `throttle`/`debounce` wrapping an inline callback, go below `main`:
+
+  ```js
+  export default function siteNav({ main, state, unmount }) {
+
+    main(() => {
+      window.addEventListener('scroll', updateScrolled)
+      unmount(() => window.removeEventListener('scroll', updateScrolled))
+    })
+
+    const updateScrolled = throttle(() => {
+      state.set({ scrolled: isPastThreshold() })
+    }, 50)
+  }
+  ```
 - Use the controller's closure instead of forwarding values as helper parameters. Declare values used by multiple helpers before `main` and reuse them directly; declare a value inside the helper when only that helper needs it. Avoid passing component state, the root element, or step context through redundant helper arguments.
 - Do not define utility functions, constants, or data tables in the component file. Implementation details (patterns, timings, labels, thresholds, data builders, pure helpers) belong in external modules with semantic, domain-based names (for example `pixel-cells.js`, `flash-timing.js`, `submit-feedback.js`), imported by the component. Never name modules `utils`, `helpers`, or `common`. Keep closure-bound helpers inside their controller, following the component ordering above.
 - Always write `export const model` across multiple lines, one property per line, even for a single property; never as a one-liner. Do not put logic (`map`, ternaries, calls with inline callbacks) inside the model; call an imported factory instead (for example `cells: createPixelCells()`).

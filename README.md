@@ -8,6 +8,7 @@ A collection of reusable Agent Skills. Each skill is self-contained under `skill
 | --- | --- |
 | [`ui-clean-architecture`](skills/ui-clean-architecture/SKILL.md) | Organizes screen-oriented front-end applications using the documented UI architecture. |
 | [`jails`](skills/jails/SKILL.md) | Builds and debugs Jails JavaScript components, state, events, templates, and application integrations. |
+| [`jails.stdlib`](skills/jails.stdlib/SKILL.md) | Selects and integrates the 19 jails.stdlib modules using source-verified APIs, examples, and limitations. |
 
 ## Repository structure
 
@@ -16,6 +17,9 @@ skills/
 ├── jails/
 │   ├── SKILL.md
 │   ├── ai/
+│   └── references/
+├── jails.stdlib/
+│   ├── SKILL.md
 │   └── references/
 └── ui-clean-architecture/
     ├── SKILL.md
@@ -36,4 +40,5 @@ Or grab individual skills:
 ```bash
 npx skills add javiani/agent-skills --skill ui-clean-architecture
 npx skills add javiani/agent-skills --skill jails
+npx skills add javiani/agent-skills --skill jails.stdlib
 ```

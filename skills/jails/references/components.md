@@ -22,7 +22,7 @@ start()
 
 ## Controller
 
-The default export runs for each registered element instance. Destructure the instance helpers it uses. `main(callback)` registers initialization after mounting. The documented pattern allows handlers declared with `const` after registration of `main`; do not call them directly before initialization.
+The default export runs for each registered element instance. Destructure the instance helpers it uses. `main(callback)` registers initialization after mounting. The documented pattern allows handlers declared with `const` after registration of `main`; do not call them directly before initialization. Convention: above `main` declare only plain-value variables or values returned by external functions; every function-valued constant (including `throttle(() => ...)`/`debounce(() => ...)` wrappers with inline callbacks) goes below `main`.
 
 A controller may be `async`; `await` delays the rest of that controller, including any later initialization or handler registration. The documented TypeScript types are `Component`, `Model`, `View`, and `Template` from `jails-js`; verify their installed exports before use.
 
