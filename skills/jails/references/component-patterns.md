@@ -1,6 +1,6 @@
 # Component patterns
 
-Choose patterns by the component's responsibility. Organization advice does not introduce runtime APIs. See [component exports](../references/components.md) and [helpers](../references/helpers.md) for contracts.
+Choose patterns by the component's responsibility. Organization advice does not introduce runtime APIs. See [component exports](components.md) and [helpers](helpers.md) for contracts.
 
 ## Local state
 
@@ -169,4 +169,4 @@ export const template = ({ children }) => {
 }
 ```
 
-This export is a fragment of a component module with a controller and model. See [distribution and SSR](../references/ecosystem.md) for complete integration guidance.
+This export is a fragment of a component module with a controller and model. See [distribution and SSR](ecosystem.md) for complete integration guidance.

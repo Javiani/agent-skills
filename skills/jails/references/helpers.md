@@ -57,7 +57,7 @@ This fragment needs `on` and `emit` from its controller. For attribute changes, 
 
 Emitted-event handlers receive `(event, data)` in the supplied examples; subscription callbacks receive data directly. Inspect installed types for other payload forms. Although the original `emit` prose mentions siblings, its described bubbling mechanism reaches ancestors; use pub/sub for direct sibling communication.
 
-`subscribe` returns an unsubscribe function. Global and component APIs share the pub/sub mechanism. See [resource lifecycle](../ai/02-component-patterns.md#resource-lifecycle) for a complete component that unsubscribes on unmount.
+`subscribe` returns an unsubscribe function. Global and component APIs share the pub/sub mechanism. See [resource lifecycle](component-patterns.md#resource-lifecycle) for a complete component that unsubscribes on unmount.
 
 ## Lifecycle and external libraries
 

@@ -154,4 +154,4 @@ Component action → operation owned by the store
 
 Define the store's scope, write operations, and lifetime. Two instances of a feature may need separate stores. Each component retains only its required projection and local UI state, not an independently writable copy of shared data.
 
-Read the [store reference](../references/store.md) for creation, dispatch, static imports, injection, and action filtering. `subscribe` returns per-subscription cleanup. `clear()` removes every subscription and belongs to intentional store-wide shutdown, not individual consumer unmounting.
+Read the [store reference](store.md) for creation, dispatch, static imports, injection, and action filtering. `subscribe` returns per-subscription cleanup. `clear()` removes every subscription and belongs to intentional store-wide shutdown, not individual consumer unmounting.

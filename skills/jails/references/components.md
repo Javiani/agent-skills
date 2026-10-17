@@ -91,6 +91,6 @@ export const template = ({ children }) => {
 
 ## Dependency injection
 
-Pass a dependency object as the third argument to `register`, then read it through the controller's `dependencies` helper. For example, register `{ catalogService }` and access `dependencies.catalogService`; see the complete [application example](../ai/04-application-architecture.md).
+Pass a dependency object as the third argument to `register`, then read it through the controller's `dependencies` helper. For example, register `{ catalogService }` and access `dependencies.catalogService`; see the complete [application example](application-architecture.md).
 
 Use injection when consumers supply implementations such as validation rules or adapters. Direct imports remain appropriate when they fit the existing architecture.

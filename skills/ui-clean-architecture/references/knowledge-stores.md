@@ -1,6 +1,6 @@
 # Stores
 
-Stores manage state persistence and communication between components within one screen or [domain](../domain/index.md).
+Stores manage state persistence and communication between components within one screen or [domain](knowledge-domain.md).
 
 ## Required structure
 

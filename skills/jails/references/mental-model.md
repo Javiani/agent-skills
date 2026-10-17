@@ -40,4 +40,4 @@ This is a conceptual flow, not a complete runtime initialization order. The supp
 
 An *island* here means a bounded interactive region, not a Jails isolation or loading API. A coordinating root component is valid when it has a concrete responsibility. No mandatory application architecture is implied.
 
-Read [implementation decisions](05-decisions.md) for boundaries and [component patterns](02-component-patterns.md) for implementation choices.
+Read [implementation decisions](decisions.md) for boundaries and [component patterns](component-patterns.md) for implementation choices.

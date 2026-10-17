@@ -111,7 +111,7 @@ This example expects a JSON array and loads once per mount. Adapt the contract t
 
 Create a component when a DOM region has behavior, lifecycle, reuse, or a collaboration contract that benefits from separation. Keep purely visual elements in HTML; shared calculations may only need a function.
 
-A feature groups a product capability, such as a catalog or cart. An ancestor can coordinate descendants with events and props; separate regions can use services or pub/sub according to the [communication guide](03-communication-patterns.md). Sharing data does not require sharing all UI state.
+A feature groups a product capability, such as a catalog or cart. An ancestor can coordinate descendants with events and props; separate regions can use services or pub/sub according to the [communication guide](communication-patterns.md). Sharing data does not require sharing all UI state.
 
 Optional structure for a growing application:
 

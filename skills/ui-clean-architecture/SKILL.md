@@ -1,17 +1,52 @@
 ---
 name: ui-clean-architecture
-description: Enforces the UI Clean Architecture described in references/knowledge/ for screen-oriented front-end implementations and refactoring existing front-end applications.
+description: Implement, refactor, and review screen-oriented front-end applications using UI Clean Architecture. Use when organizing layouts, screen domains, shared components, entities, services, constants, or screen stores, or when checking an application against this architecture.
 ---
 
-# UI Clean Architecture Skill
+# UI Clean Architecture
+
+Organize front-end applications around standalone screens, cohesive UI sections, and explicit ownership of state, data adaptation, and external communication.
+
+## When to apply
+
+- Implement a screen or feature using UI Clean Architecture.
+- Refactor an existing application into layouts, domains, and shared abstractions.
+- Review component boundaries, store consumption, or architectural responsibilities.
+- Maintain this skill against its source documentation.
+
+## How it works
+
+1. Inspect the affected screens, routes, framework, existing abstractions, and user flows. Identify the requested scope before changing structure.
+2. Read the [architecture overview](references/knowledge-overview.md) and only the relevant knowledge references in the table below before deciding the implementation.
+3. Read the [implementation guide](references/implementation-guide.md) for the applicable creation, modification, refactoring, or review workflow and detailed code conventions.
+4. Assign each responsibility to its documented owner. Keep framework route files as integration boundaries and preserve user-visible behavior during refactoring.
+5. Check the result against the invariants below and the applicable source rules. Run relevant project checks; report changes, verification, and unresolved ambiguities.
 
 ## Source of truth
 
-Use `references/knowledge/` as the only source of architectural truth.
+The knowledge references below are the only source of architectural truth. Preserve this architecture's terminology and framework independence. Do not reinterpret it through Clean Architecture, DDD, Hexagonal Architecture, MVC, or another methodology. When a rule is unclear, keep the implementation minimal and report the ambiguity instead of inventing a rule.
 
-This skill compiles the knowledge in `references/knowledge/` into agent behavior. It does not reinterpret the architecture through Clean Architecture, DDD, Hexagonal Architecture, MVC, or any other known approach.
+The implementation guide operationalizes those sources. Auxiliary architecture summaries are supporting material; if a summary or historical uncertainty conflicts with current knowledge, follow the knowledge reference.
 
-When a rule is unclear, do not invent one; keep the implementation minimal and aligned with the documented structure.
+## Reference guide
+
+| Task | Read |
+| --- | --- |
+| Project structure, layouts, shared scope, type ownership, or framework integration | [Architecture overview](references/knowledge-overview.md) |
+| Screen responsibilities, inputs/outputs, and domain composition | [Domains](references/knowledge-domain.md) |
+| Section/atomic boundaries, component placement, and local behavior | [Components](references/knowledge-components.md) |
+| Constant naming, grouping, and file organization | [Constants](references/knowledge-constants.md) |
+| Raw-payload adaptation and typed factory contracts | [Entities](references/knowledge-entities.md) |
+| Stateless external communication and return contracts | [Services](references/knowledge-services.md) |
+| Shared screen state, framework adapters, actions, or persistence | [Stores](references/knowledge-stores.md) |
+| Implementation conventions, feature work, refactoring, or review | [Implementation guide](references/implementation-guide.md) |
+| Trace summarized rules to their sources | [Extracted rules](references/extracted-rules.md) |
+| Inspect the supporting architecture model | [Architecture model](references/architecture-model.md) |
+| Consult the supporting architecture summary | [Architecture reference](references/architecture-reference.md) |
+| Investigate previously recorded gaps against current knowledge | [Historical uncertainties](references/uncertainties.md) |
+| Update this skill from its knowledge sources | [Skill maintenance](references/update-skill.md) |
+
+Inspect the affected project's own `types.ts` files when changing application-owned types. Use the owning abstraction for local types and the nearest common parent for shared types.
 
 ## Architectural invariants
 
@@ -36,295 +71,6 @@ When a rule is unclear, do not invent one; keep the implementation minimal and a
 19. Apply the code readability standard to all project code and every code snippet: consistent indentation, explanatory comments, clear naming and structure, and no compressed one-liners.
 20. Place application-owned TypeScript types in `types.ts` inside the specific abstraction that uses them. When multiple abstractions consume the same type, place it in `types.ts` at their nearest common parent; do not move all types to the Domain or Shared root by default.
 
-## Code readability
+## Present results
 
-Apply this requirement to all code written, modified, reviewed, or presented as an example, regardless of architectural layer or language. Follow the readability standard in `references/knowledge/index.md`: use consistent indentation, include comments explaining intent and relevant decisions, and prefer explicit multiline blocks over one-liners. Keep names descriptive and separate logical steps so the code is easy to follow. Comments should clarify purpose, behavior, or constraints rather than merely repeat the syntax. Put module-level utility arrow functions below exported functions and primary exports, at the end of the file, so the public API is encountered first. Keep component-scoped helpers inside their owner when they depend on its closure.
-
-## Required reading before implementation
-
-Before creating or modifying architecture-aware code, inspect the relevant architectural concepts in `references/knowledge/`:
-
-- `references/knowledge/index.md` for the project structure and framework integration rules
-- `references/knowledge/domain/index.md` for domain responsibilities and standalone screen behavior
-- `references/knowledge/components/index.md` for section/atomic component boundaries and behavior
-- `references/knowledge/constants/index.md` for constant organization and naming rules
-- the relevant `types.ts` files, choosing the owning abstraction's folder for local types and the nearest common parent for types shared across abstractions
-- `references/knowledge/entities/index.md` for entity factory/adaptation rules
-- `references/knowledge/services/index.md` for stateless service responsibilities and return contracts
-- `references/knowledge/stores/index.md` for store contracts, framework adapters, and state subscription rules when the screen uses shared state
-
-If the task involves a screen, domain, shared abstraction, reusable component, constant, entity, or service, load the relevant section before deciding the implementation.
-
-## Decision flow
-
-Use this sequence for every implementation task:
-
-1. Identify affected architecture concepts.
-2. Determine whether the task changes a `layout`, `domain`, `shared`, `component`, `constant`, `entity`, or `service`.
-3. Check the relevant `references/knowledge/` guidance before editing code.
-4. Choose the implementation that respects the architecture without inventing new architectural rules.
-5. Validate the result against the known invariants.
-
-## Structure rules
-
-### Layouts
-When creating or modifying a layout:
-- keep only the standard HTML shell, minimal structural wrappers, slots or children, and imports/composition in `layouts/`
-- do not create a `layouts/components/` directory or place detailed UI components under `layouts/`
-- put reusable frame components such as headers, navigation, and footers in `shared/components/<component-name>/index` when they are reused across domains, then import and compose them in the layout
-- do not blur layout concerns into domain logic
-- preserve the architecture's separation between layout shell and domain page composition
-- store layouts as flat files (e.g., `default.tsx`, `admin.tsx`) without deep nested folders
-
-### Domains
-When creating or modifying a domain:
-- treat the domain as a standalone screen or page
-- include all required components, constants, entities, and services needed for that screen
-- let the domain know its required inputs and outputs
-- keep domain-local abstractions in the domain unless they are reused across domains
-- use the framework route or page integration layer to resolve route parameters, load required context, and render the domain
-- keep detailed HTML in Section Components and let the Domain compose and coordinate them
-- export only the Domain root component from the domain `index` file; move every secondary UI component to its own component entry point
-- do not read shared store state in the Domain solely to pass it to descendants
-
-### Shared
-When creating or modifying a shared abstraction:
-- only place it in `shared/` if it is reused across domains
-- mirror the same structural discipline as the domain abstraction, including shared `components/`, `constants/`, `entities/`, and `services/` when applicable
-- do not move domain-local code into shared just because it is reusable in one screen
-
-When creating or modifying a component:
-- default to a Section Component that keeps contextually related elements together as a meaningful horizontal block
-- extract smaller atomic components only for concrete reuse by other components; file length, isolated HTML elements, or speculative reuse alone do not justify splitting a section
-- if it is a section component, keep it purpose-specific and standalone, folder-organized under `components/` with a semantic folder name and an `index` entry point
-- give each Section Component its own entry point and one public component export
-- if it is an atomic component used only within one section component, place it in a subfolder within that section component's folder
-- if an atomic component is used by multiple section components within the same domain, place it as a sibling folder alongside the section components
-- if an atomic component is used across multiple domains, place it in `shared/components/`
-- section components must not directly depend on sibling section components
-- components react to user events and update local state when needed
-- components that depend on shared screen state use the framework's store adapter locally, or the framework-agnostic `@javiani/onijs` vanilla API when no adapter exists
-- pass explicit inputs to children when needed, but do not prop-drill shared store state through the Domain or unrelated intermediate components
-
-### Entities
-When creating or modifying an entity:
-- use a factory-style entity function and its corresponding typed structure
-- name the entity with a noun (for example, `Movie`) and its structure with the noun plus `Type` (for example, `MovieType`)
-- expose the factory function as the public API of the entity file
-- declare raw-payload defaults directly in the factory signature with destructuring
-- keep private transformation helpers below the exported factory function
-- keep raw-to-application mapping logic inside the entity abstraction
-- adapt JSON payloads into the application's shape without mixing adaptation rules into a component or service
-- keep entities framework-agnostic and free of network communication or local persistence
-- store entity files semantically in `entities/` as standalone files rather than nesting them in component folders
-
-### Services
-When creating or modifying a service:
-- keep the service stateless and focused on external communication
-- return `Promise<Entity>` or `Promise<Entity[]>` as documented
-- place service logic under a contextual `services/<service-name>/index` pattern in the relevant domain or shared scope
-- treat HTTP or API calls as service concerns, not domain or component concerns
-
-### Stores
-
-- Use `@javiani/onijs` for screen state stores.
-- Keep at most one store per screen and place it at `store/index.ts` within that screen's domain.
-- In React, use `@javiani/onijs/react` and `useStore()` in state-dependent components; do not use the vanilla subscriber to trigger React renders.
-- In non-React applications, use the framework-agnostic `@javiani/onijs` API and connect `getState`, `dispatch`, and `subscribe` to the framework's own reactive mechanism.
-- In TypeScript stores, define structures with `type` aliases, not `interface` declarations. Use arrow functions throughout the store module; do not declare functions with the `function` keyword.
-- Name the initial state constant `initialState` in camelCase, even though other fixed constants use `SCREAMING_SNAKE_CASE`.
-- For client-side restoration of trusted session state, read the storage value once and initialize `initialState` with a single ternary that parses the stored value or returns the default state. Avoid redundant checks and defensive parsing layers for this app-owned value. Retain browser guards when the module can execute during server rendering.
-- Declare the actions object inline in the `Oni` or `createStore` call; do not extract actions into a separate constant.
-- Write every action as a multiline arrow-function block with an explicit `return`; do not compress actions into expression-bodied one-liners.
-- Name the first action parameter `state`, never `_`, even when the transition could be written without it. Use `state` when forming the next state and preserve unaffected fields where appropriate.
-- Name every action in `SCREAMING_SNAKE_CASE` and pass payloads as objects with named properties, including single-value payloads.
-- Keep actions pure by default. An action may use the third-argument `{ dispatch }` helper to make an asynchronous transition explicit by dispatching another action.
-- Never perform local or session persistence inside an action. Register persistence outside the actions with `store.subscribe`.
-- Filter subscriber side effects by the received action with `switch (action)` when only specific actions should trigger them.
-- Place module-level utility arrow functions, such as persistence helpers, after the exported store and subscriber declarations at the bottom of the file. Do not put implementation-detail utilities before the store's public API.
-- Do not use the JavaScript `void` operator as a statement to discard promises or silence unused values. Use `void` only as a TypeScript type annotation, such as a function return type.
-
-### Constants
-When creating or modifying constants:
-- centralize values in exported constants
-- use `SCREAMING_SNAKE_CASE` for all constant names (variables and functions)
-- prefer pure derived values or fixed values over scattered literals
-- accept `process.env`-based values when the architecture requires system constants
-- keep constants semantically grouped in dedicated files rather than in component directory nesting
-- store constants as flat files (e.g., `environment.ts`, `api.ts`) directly inside `constants/`, without deep nested folder structures
-
-This matches the architecture's rule that `constants/` and `entities/` remain flat semantic files at the first level of each abstraction, while `components/` and `services/` use semantic folders with an `index` file.
-
-## Operational guidance
-
-### Create a feature
-When creating a feature for a screen:
-1. Determine whether it is a domain, a section component, an atomic component, an entity, a service, or a constant.
-2. Place it according to its scope: domain-local or shared.
-3. Compose the screen from the domain root.
-4. Keep section boundaries independent and stacked top-to-bottom.
-5. Use framework route files only to integrate the domain into the page lifecycle.
-6. Let each state-dependent component consume shared screen state through the selected framework's store adapter, or through `@javiani/onijs` vanilla when no adapter exists.
-7. Pass only explicit component inputs and derived values; never transport shared store state through unrelated components with prop chains.
-
-### Modify an existing feature
-Before modifying a feature:
-1. Identify the domain or shared abstraction the feature belongs to.
-2. Check whether the change affects a local component, a shared component, an entity, a service, or a constant.
-3. Preserve the architecture's domain boundary and section independence.
-4. Do not relocate local screen logic into shared abstractions unless the architecture explicitly supports reuse across domains.
-
-### Refactor an existing application
-Use this workflow when an application already exists and its current folders or components do not clearly express the architecture. Refactoring means making responsibilities and boundaries explicit while preserving the application's user-visible behavior. Do not redesign the interface, replace the framework, or rewrite working code unless the requested change requires it.
-
-#### 1. Discover screens and user flows
-
-Start from the application's actual screens and flows, not from its folder names. Inspect routes, page components, layouts, rendered markup, tests, and available browser behavior as needed. Treat each meaningful screen or page as a candidate Domain.
-
-For each screen, separate:
-
-- UI structure: visual hierarchy, sections, content, and reusable visual elements.
-- Behavior: events, state transitions, data loading, persistence, navigation, communication, and external effects.
-
-Use the smallest nearby check that can disconfirm the interpretation, such as a route test, existing component test, type check, or browser render. If a file only forwards or registers behavior, follow the call path to the nearest code that directly renders, mutates, or controls it.
-
-#### 2. Identify the Domain root
-
-For each discovered screen, identify the framework-level route, page, view, or screen component that currently represents it. Adapt that entry point to integrate the corresponding Domain. Route files remain framework integration points; they must not become the architecture itself.
-
-Record the Domain's required inputs and outputs before moving code. Keep route parameter resolution, framework lifecycle concerns, and page integration at the framework boundary, while screen composition and coordination belong to the Domain.
-
-#### 3. Extract static UI structure first
-
-Refactor from the outside in:
-
-`Screens -> UI structure -> Section Components -> behavior -> architectural responsibilities -> communication -> infrastructure`
-
-Before moving business behavior, extract the meaningful visual blocks into Section Components. Prefer cohesive horizontal contexts with their own purpose, content, controls, or loading/empty state. Preserve the existing markup and visual output. Do not split a section into atomic components for file length or hypothetical reuse; extract an Atomic Component only when concrete reuse requires it.
-
-Keep the Domain responsible for composition and screen-level coordination. Keep detailed section markup inside the corresponding component entry point, and do not define secondary UI components in the Domain `index` file.
-
-#### 4. Assign behavior to its owner
-
-After the static composition is stable, trace each interaction and state transition to the smallest component or architectural abstraction that owns it.
-
-- Keep event handling and exclusively local state in the owning component, using the existing framework idioms.
-- Use the screen's single store when state must be shared between components in one Domain.
-- Let state-dependent components consume the store through the framework adapter directly; do not pass shared store state through the Domain or unrelated intermediate components.
-- Keep screen-level orchestration in the Domain and route lifecycle integration at the framework boundary.
-
-Do not introduce global state or cross-component coordination when local state or direct Domain composition is sufficient.
-
-#### 5. Classify responsibilities using the existing abstractions
-
-Classify code by what it does, not by its current filename. Keep the legal structure limited to the documented architecture:
-
-- Rendering and local interaction belong to Components.
-- Screen composition and coordination belong to the Domain.
-- Shared screen state belongs to the Domain's `store/index.ts` and follows the documented `@javiani/onijs` contract.
-- Raw payload adaptation belongs to Entities.
-- HTTP, API, fetch, analytics, and other stateless external communication belong to Services.
-- Fixed or derived values belong to Constants.
-- Cross-domain abstractions belong to Shared; screen-specific abstractions remain in the Domain.
-- The document shell, minimal structural wrappers, and imports/composition of Shared frame components belong to Layouts.
-
-Do not invent controllers, repositories, use-case layers, persistence layers, or other abstractions that are not defined by the knowledge files. Preserve framework-native mechanisms where they fit these responsibilities.
-
-#### 6. Normalize communication and infrastructure
-
-Inspect existing props, callbacks, context, event systems, global stores, shared mutable state, and direct component references. Replace unnecessary transport paths with the smallest valid communication scope:
-
-- use props for explicit inputs, local composition, and derived values;
-- use the Domain to compose independent Section Components;
-- use the Domain store and its adapter for shared state within one screen;
-- use Shared only for behavior or abstractions reused by multiple Domains.
-
-Move HTTP, browser storage, databases, caching, SDK calls, analytics, and platform integrations behind the appropriate documented boundary. Services remain stateless and return entities or arrays of entities. Persistence remains outside store actions and is handled through the documented subscriber mechanism or another existing infrastructure boundary that fits the knowledge model. Preserve external contracts whenever possible.
-
-#### 7. Refactor one coherent unit at a time
-
-For each Domain, Section Component, behavior, or dependency:
-
-1. Identify its current responsibility and destination.
-2. Move or adapt the smallest useful unit.
-3. Update imports and communication paths.
-4. Verify the behavior before removing the old implementation.
-5. Remove obsolete files, duplicate implementations, and migration leftovers only after the replacement is working.
-
-Do not perform a broad speculative rewrite. Preserve working code when it already satisfies the relevant boundary.
-
-#### 8. Validate continuously and audit the result
-
-After every meaningful step, run the narrowest available validation for the changed slice, such as a focused test, type check, lint check, build, or browser render. Fix regressions before moving to the next unit.
-
-At the end, verify all of the following:
-
-- each meaningful screen is represented by a standalone Domain;
-- route files integrate Domains instead of defining the architecture;
-- Section Components own meaningful UI blocks and do not depend directly on sibling sections;
-- each Domain entry point exports only its public root component;
-- behavior and state live at the smallest appropriate scope;
-- shared state uses the documented store and adapter rules;
-- Entities, Services, Constants, Layouts, and Shared abstractions have the documented responsibilities;
-- dependencies and component communication do not introduce unnecessary coupling;
-- existing functionality and user-visible behavior remain intact;
-- obsolete architecture, duplicated code, unused imports, and temporary migration code are removed.
-
-### Review a pull request
-Review for architecture adherence by checking:
-- Is all code consistently indented, clearly structured, and accompanied by explanatory comments, with compressed one-liners expanded into readable blocks?
-- Is the structure still `layouts` / `domains` / `shared`?
-- Are the documented sub-structures still respected for components, constants, entities, and services when applicable?
-- Is each screen still a domain with clear inputs and outputs?
-- Does each domain `index` file export only one public root component?
-- Do state-dependent components consume shared state through the framework adapter instead of receiving it through prop drilling?
-- Do layouts and domains compose components with only minimal structural HTML?
-- Do Section Components keep related elements together, with smaller components extracted only for concrete reuse by other components?
-- Are section components still isolated from sibling sections?
-- Are constants still centralized and properly named?
-- Are framework route files used as integrations rather than as the architecture definition?
-
-### Integrate an external API or system value
-When integrating external systems:
-1. Determine whether the integration is a constant, an entity, a service, a shared abstraction, or a domain requirement.
-2. Do not invent an architectural layer that the knowledge does not define.
-3. Keep framework route conventions at the boundary only.
-4. Preserve the screen/domain responsibility model.
-
-## Forbidden actions
-
-Never:
-- rename the architecture into Clean Architecture, DDD, Hexagonal Architecture, or another external methodology
-- treat a framework convention as a top-level architectural rule
-- move section dependencies into sibling section components
-- create domain logic that is not owned by the domain
-- scatter constants across component folders in a deep nested structure
-- convert example code into a mandatory standard unless the knowledge explicitly says so
-- invent missing architectural rules to fill gaps, including undocumented state-persistence or data-fetching layers
-
-## Framework-agnostic rule
-
-The architecture is independent from frameworks. A route file may follow the framework's route convention, but the architecture still remains: layouts, domains, shared, components, constants, entities, services.
-
-When a framework is swapped:
-- keep the same architecture
-- change only the route integration or page wrapper mechanism
-- do not reinterpret the architecture to fit the framework's conventions
-
-## Quick reference
-
-- `layouts/`: page shell, minimal wrappers, and composition of shared frame components
-- `domains/`: screens/pages with local dependencies and composition
-- `shared/`: cross-domain reusable abstractions
-- `components/`: section and atomic UI blocks
-- `constants/`: exported fixed and derived values in `SCREAMING_SNAKE_CASE`
-- `entities/`: raw-to-application data adapters and typed page models
-- `services/`: stateless external communication and API functions
-
-## Supporting material
-
-For detailed rule tracing and architecture-model context, see:
-- `references/architecture/extracted-rules.md`
-- `references/architecture/architecture-model.md`
-- `references/architecture/uncertainties.md`
-- `references/architecture/architecture-reference.md`
+Describe the affected screens and abstractions, the concrete changes, and the checks performed. For reviews, identify actionable deviations and their source rules. For skill maintenance, report changed files, any changed architectural rules, and unresolved contradictions.

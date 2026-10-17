@@ -108,7 +108,7 @@ Supplied repository links:
 - [Alternate Std repository](https://github.com/jails-org/Std)
 - [Form validation](https://github.com/jails-org/Std/tree/main/form-validation)
 
-For shared state, the author recommends `Store` from `jails.stdlib/store`, while allowing other framework-agnostic reactive stores. See the [store contract](store.md) and [communication guide](../ai/03-communication-patterns.md); a shared store is not mandatory for every component.
+For shared state, the author recommends `Store` from `jails.stdlib/store`, while allowing other framework-agnostic reactive stores. See the [store contract](store.md) and [communication guide](communication-patterns.md); a shared store is not mandatory for every component.
 
 ## Demo catalog
 

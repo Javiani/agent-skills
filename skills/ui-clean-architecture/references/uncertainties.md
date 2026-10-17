@@ -1,4 +1,6 @@
-# Uncertainties
+# Historical uncertainties
+
+These entries record gaps from an earlier documentation snapshot. Recheck each against the current knowledge references linked from SKILL.md before treating it as unresolved. In particular, external communication is now defined in knowledge-services.md.
 
 ## UNCERTAINTY-001
 

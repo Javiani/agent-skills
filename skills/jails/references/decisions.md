@@ -31,7 +31,7 @@ Shared does not mean global. Independent feature instances may need separate own
 - Distant regions react to a fact: `publish`/`subscribe`, with payload contract and cleanup.
 - Consumer needs current data after missing an event: read from the data owner; do not assume replay.
 
-For complete examples, read [communication patterns](03-communication-patterns.md).
+For complete examples, read [communication patterns](communication-patterns.md).
 
 ## Should this be a service?
 
@@ -39,7 +39,7 @@ Keep DOM reactions in the component. Extract I/O or reusable logic when a separa
 
 ## Should markup be embedded?
 
-Enhance suitable consumer/server HTML. Export `template` for widgets distributed with their own presentation, preserving `children` when the contract allows inserted content. For shared server/client markup, see [separate templates](../references/ecosystem.md).
+Enhance suitable consumer/server HTML. Export `template` for widgets distributed with their own presentation, preserving `children` when the contract allows inserted content. For shared server/client markup, see [separate templates](ecosystem.md).
 
 ## Does another library control the DOM?
 
@@ -62,6 +62,6 @@ Investigate relevant hypotheses rather than running every check for every task:
 
 Inspect installed code and types for verifiable version details. Ask for clarification when intent or an unavailable contract materially changes the implementation. Do not turn an undocumented detail into a universal rule.
 
-The supplied author guidance establishes parent `state.set()` with optional child `effect`, and prefers `jails.stdlib/store` while allowing other framework-agnostic reactive stores. Read the [store contract](../references/store.md) before implementing store operations. Confirm model-function/`initialState` precedence or protection details only when they affect the task.
+The supplied author guidance establishes parent `state.set()` with optional child `effect`, and prefers `jails.stdlib/store` while allowing other framework-agnostic reactive stores. Read the [store contract](store.md) before implementing store operations. Confirm model-function/`initialState` precedence or protection details only when they affect the task.
 
 Feature folders, services, and islands are optional. Keep an existing architecture with clear responsibilities.

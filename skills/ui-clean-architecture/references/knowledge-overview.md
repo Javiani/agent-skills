@@ -20,12 +20,12 @@ All project code and every code snippet must follow this standard, including imp
 
 # Abstractions
 
-- [Domains](./domain/index.md)
-- [Entities](./entities/index.md)
-- [Components](./components/index.md)
-- [Constants](./constants/index.md)
-- [Services](./services/index.md)
-- [Stores](./stores/index.md)
+- [Domains](knowledge-domain.md)
+- [Entities](knowledge-entities.md)
+- [Components](knowledge-components.md)
+- [Constants](knowledge-constants.md)
+- [Services](knowledge-services.md)
+- [Stores](knowledge-stores.md)
 
 # Folder Structure
 

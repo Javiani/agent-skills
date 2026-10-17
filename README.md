@@ -16,7 +16,6 @@ A collection of reusable Agent Skills. Each skill is self-contained under `skill
 skills/
 ├── jails/
 │   ├── SKILL.md
-│   ├── ai/
 │   └── references/
 ├── jails-stdlib/
 │   ├── SKILL.md
@@ -42,3 +41,14 @@ npx skills add javiani/agent-skills --skill ui-clean-architecture
 npx skills add javiani/agent-skills --skill jails
 npx skills add javiani/agent-skills --skill jails-stdlib
 ```
+
+## Skill format
+
+Skills follow the [Agent Skills specification](https://agentskills.io/specification) and the [Vercel agent-skills conventions](https://github.com/vercel-labs/agent-skills/blob/main/AGENTS.md):
+
+- Each kebab-case skill directory contains a `SKILL.md` with matching `name` and a description explaining when to use it.
+- The entrypoint describes applicability, workflow, essential constraints, and direct links to supporting documents.
+- Detailed guidance lives in `references/` and is loaded only when relevant to the task.
+- Scripts and assets are optional; include them only when the skill needs them.
+
+`jails` documents framework behavior and component conventions; `jails-stdlib` documents library module contracts; `ui-clean-architecture` defines application organization. Apply the relevant skills together when a task spans these concerns.
