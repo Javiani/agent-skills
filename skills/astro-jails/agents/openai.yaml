@@ -1,0 +1,4 @@
+interface:
+  display_name: "Astro + Jails"
+  short_description: "Recreate the reference Astro application architecture"
+  default_prompt: "Use $astro-jails to create an Astro application following the reference application's folder structure, abstractions, and interactions, adapted to my new product, applying $jails and $jails-stdlib best practices and reusing stdlib modules."

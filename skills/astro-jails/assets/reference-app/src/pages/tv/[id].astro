@@ -1,0 +1,16 @@
+---
+import Detail from 'domain/detail/index.astro'
+import { getTMDB } from 'shared/services/tmdb'
+
+const { id } = Astro.params
+const { TMDB_API_KEY } = import.meta.env 
+
+const url = `https://api.themoviedb.org/3/tv/${id}?append_to_response=credits,videos,images&api_key=${TMDB_API_KEY}`
+const show = await getTMDB( url )
+--- 
+
+<Detail 
+	title="Astro Shows" 
+	item={ show } 
+	menu="show" 
+/>

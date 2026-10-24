@@ -99,15 +99,18 @@ When creating or modifying a service:
 - In non-React applications, use the framework-agnostic `@javiani/onijs` API and connect `getState`, `dispatch`, and `subscribe` to the framework's own reactive mechanism.
 - In TypeScript stores, define structures with `type` aliases, not `interface` declarations. Use arrow functions throughout the store module; do not declare functions with the `function` keyword.
 - Name the initial state constant `initialState` in camelCase, even though other fixed constants use `SCREAMING_SNAKE_CASE`.
-- For client-side restoration of trusted session state, read the storage value once and initialize `initialState` with a single ternary that parses the stored value or returns the default state. Avoid redundant checks and defensive parsing layers for this app-owned value. Retain browser guards when the module can execute during server rendering.
+- Keep `initialState` as a simple in-memory default. Do not read storage, use an IIFE, or perform restoration logic before creating the store.
+- For client-side state restoration, read the stored value outside the store, such as in the screen component, and dispatch a restoration action with a named payload property. Put validation, normalization, and the state transition in the action. Keep persistence writes or cleanup outside actions, typically in a filtered subscriber, and retain browser guards where storage access can run during server rendering.
 - Declare the actions object inline in the `Oni` or `createStore` call; do not extract actions into a separate constant.
 - Write every action as a multiline arrow-function block with an explicit `return`; do not compress actions into expression-bodied one-liners.
+- Add one blank line immediately before and after every action definition in the actions object to make each action visually distinct.
 - Name the first action parameter `state`, never `_`, even when the transition could be written without it. Use `state` when forming the next state and preserve unaffected fields where appropriate.
 - Name every action in `SCREAMING_SNAKE_CASE` and pass payloads as objects with named properties, including single-value payloads.
 - Keep actions pure by default. An action may use the third-argument `{ dispatch }` helper to make an asynchronous transition explicit by dispatching another action.
 - Never perform local or session persistence inside an action. Register persistence outside the actions with `store.subscribe`.
 - Filter subscriber side effects by the received action with `switch (action)` when only specific actions should trigger them.
 - Place module-level utility arrow functions, such as persistence helpers, after the exported store and subscriber declarations at the bottom of the file. Do not put implementation-detail utilities before the store's public API.
+- Keep actions focused and readable. When validation or transformation makes an action long or difficult to scan, extract that logic into a module-level arrow-function helper after the exported store and subscriber declarations. Call the helper from the action, but never return the helper call directly: the helper returns only the resolved values, and the action destructures them and explicitly composes the returned state with `...state` plus each changed property.
 - Do not use the JavaScript `void` operator as a statement to discard promises or silence unused values. Use `void` only as a TypeScript type annotation, such as a function return type.
 
 ### Constants
@@ -276,4 +279,3 @@ When a framework is swapped:
 - keep the same architecture
 - change only the route integration or page wrapper mechanism
 - do not reinterpret the architecture to fit the framework's conventions
-

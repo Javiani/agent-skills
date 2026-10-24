@@ -14,9 +14,28 @@ Stores manage state persistence and communication between components within one 
 - If a store type is also consumed by the Domain or another nested abstraction, place it in `types.ts` at the nearest common parent of those consumers. Keep other store-only types in `store/types.ts`.
 - In TypeScript store modules, declare structures with `type` aliases rather than `interface` declarations, and use arrow functions throughout instead of `function` declarations.
 - Write every action as a multiline arrow-function block with an explicit `return`; do not use expression-bodied one-line actions.
+- Add one blank line immediately before and after each action definition in the actions object so each action is visually distinct.
 - Name the first parameter of every action `state`, never `_`. Use it to form the next state and preserve unaffected fields where appropriate, rather than silencing an unused parameter.
 - Do not use the JavaScript `void` operator as a statement to discard promises or silence unused values. Use `void` only in TypeScript type positions, such as a function return type.
 - Place module-level utility arrow functions below the exported store and subscriber declarations at the bottom of the file. Keep the public API and primary behavior visible before implementation-detail helpers.
+- Keep actions focused on the state transition. When validation or transformation makes an action long or difficult to scan, extract that logic into a module-level arrow-function helper below the store and subscriber declarations, then call it from the action. The helper returns only the resolved values (not the whole next state); the action destructures them and explicitly composes its return object, spreading `state` and listing each property it changes. Never write `return helper(state, payload)` directly.
+- Keep `initialState` as a simple in-memory default. Do not read persistence, run an IIFE, or perform restoration logic before creating the store.
+- Read persisted values outside the store, such as in the component that initializes the screen, then dispatch a restoration action with the value as a named payload property. Put validation, normalization, and the state transition in that action.
+- If restoration validation or normalization makes the action long or complex, keep the action concise and extract the logic into a module-level arrow-function helper after the exported store and subscriber declarations. The action calls the helper with the payload, destructures the named values it returns, and explicitly composes the returned state with `...state` plus each changed property.
+
+```ts
+RESTORE_STATE: (state, { savedState }) => {
+  const { name, email, age } = resolveRestoredRegistration(savedState)
+
+  return {
+    ...state,
+    name,
+    email,
+    age,
+  }
+},
+```
+- Keep persistence writes outside actions in subscribers. A restoration action may be included in a filtered subscriber when the normalized restored state should replace malformed or outdated persisted data.
 
 ## Oni API contract
 
@@ -88,12 +107,14 @@ import Oni from '@javiani/onijs'
 import type { CatalogActions, CatalogState } from './types'
 
 const store = Oni<CatalogState, CatalogActions>(initialState, {
+
   SET_MOVIES: (state, { movies }) => {
     return {
       ...state,
       movies,
     }
   },
+
   TOGGLE_FAVORITE: (state, { id }) => {
     const favorites = state.favorites.includes(id)
       ? state.favorites.filter((favoriteId) => favoriteId !== id)
@@ -104,6 +125,7 @@ const store = Oni<CatalogState, CatalogActions>(initialState, {
       favorites,
     }
   },
+
 })
 
 store.dispatch('SET_MOVIES', { movies })
@@ -121,6 +143,7 @@ Prefer resolving external requests in a service and passing the resulting promis
 const initialState = { items: [], loading: false }
 
 const store = Oni(initialState, {
+
   LOAD_ITEMS: (state, { itemsPromise }, { dispatch }) => {
     itemsPromise.then((items) => dispatch('SET_ITEMS', { items }))
     return {
@@ -128,6 +151,7 @@ const store = Oni(initialState, {
       loading: true,
     }
   },
+
   SET_ITEMS: (state, { items }) => {
     return {
       ...state,
@@ -135,6 +159,7 @@ const store = Oni(initialState, {
       loading: false,
     }
   },
+
 })
 ```
 
@@ -162,43 +187,71 @@ store.subscribe((state, { action }) => {
 
 Use a subscriber that persists after every action only when persisting the entire state after every change is intentional. Otherwise, always filter with `switch (action)`. Do not try to filter actions by passing an object to `subscribe`.
 
-When initial state must be restored from storage, read it before creating the store. For trusted app-owned session data in a client-only application, read the storage key once and use a single ternary to parse the stored value or choose the default state. Avoid redundant presence checks, shape checks, and catch blocks for this narrow case. Keep the browser API guard when the module can execute during server rendering.
+When state must be restored from storage, keep the store's `initialState` as its simple default and read storage from the screen component or another integration point outside the store. Dispatch a restoration action with a named payload property. Keep parsing, validation, normalization, and the state transition in that action; keep writes or cleanup as explicit side effects in a filtered subscriber or the integration point. Guard browser-only storage access when the component or integration point can run during server rendering.
 
 ```ts
 const STORAGE_KEY = 'store-data'
-const savedState = sessionStorage.getItem(STORAGE_KEY)
-const initialState = savedState ? JSON.parse(savedState) : {
+const initialState = {
   counter: 0,
 }
 
 export const store = Oni(initialState, {
+
+  RESTORE_STATE: (state, { savedState }) => {
+    if (
+      !savedState ||
+      typeof savedState !== 'object' ||
+      typeof (savedState as Record<string, unknown>).counter !== 'number'
+    ) {
+      return {
+        ...state,
+        ...initialState,
+      }
+    }
+
+    return {
+      ...state,
+      counter: (savedState as { counter: number }).counter,
+    }
+  },
+
   COUNTER_ADD: (state, { increment = 1 }) => {
     return {
       ...state,
       counter: state.counter + increment,
     }
   },
+
   COUNTER_SUBTRACT: (state, { decrement = 1 }) => {
     return {
       ...state,
       counter: state.counter - decrement,
     }
   },
+
 })
 
 store.subscribe((state, { action }) => {
   switch (action) {
+    case 'RESTORE_STATE':
     case 'COUNTER_ADD':
     case 'COUNTER_SUBTRACT':
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state))
       break
     default:
       break
   }
 })
+
+if (typeof window !== 'undefined') {
+  const savedState = sessionStorage.getItem(STORAGE_KEY)
+  store.dispatch('RESTORE_STATE', {
+    savedState: savedState ? JSON.parse(savedState) : null,
+  })
+}
 ```
 
-Keep the storage read and fallback concise. Add parsing or runtime validation only when data can be malformed or untrusted, and do not add multiple checks for the same stored value.
+Add parsing or runtime validation when persisted data can be malformed or untrusted. Keep that validation in the restoration action rather than in store initialization.
 
 ## Vanilla store instance
 

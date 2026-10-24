@@ -1,0 +1,37 @@
+---
+import 'shared/styles/global.css'
+
+import Footer from 'shared/components/footer/index.astro'
+import Navigation from 'shared/components/navigation/index.astro'
+
+type Props = {
+	title: string,
+	menu?: 'show' | 'movies'
+}
+
+const { title, menu } = Astro.props as Props
+---
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>{title}</title>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+		<script src="shared/main"></script>
+	</head>
+	<body class="font-sans bg-gray-900 text-white">
+		<app-main class="h-screen overflow-hidden flex flex-col">
+			<Navigation menu={menu} />
+			<div id="container" class="h-full flex-1 overflow-y-auto">
+				<div id="content">
+					<slot />
+				</div>
+				<Footer />
+			</div>
+		</app-main>
+		<div class="loader"></div>
+	</body>
+</html>

@@ -1,0 +1,14 @@
+---
+import Layout from 'layouts/default.astro'
+import Gallery from 'shared/components/gallery/index.astro'
+import DetailInfo from './components/info/index.astro'
+import DetailCast from './components/cast/index.astro'
+
+const { item, title, menu } = Astro.props
+---
+
+<Layout title={title} menu={menu}>
+	<DetailInfo item={item} />
+	<DetailCast item={item} />
+	<Gallery item={item} />
+</Layout>

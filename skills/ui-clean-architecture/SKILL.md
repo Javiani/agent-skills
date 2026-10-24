@@ -71,6 +71,10 @@ Inspect the affected project's own `types.ts` files when changing application-ow
 19. Apply the code readability standard to all project code and every code snippet: consistent indentation, explanatory comments, clear naming and structure, and no compressed one-liners.
 20. Place application-owned TypeScript types in `types.ts` inside the specific abstraction that uses them. When multiple abstractions consume the same type, place it in `types.ts` at their nearest common parent; do not move all types to the Domain or Shared root by default.
 
+21. Keep a store's `initialState` as a simple in-memory default. Read persisted state outside the store and dispatch a restoration action from the screen component or another integration point; keep restoration validation and state transitions in that action, and persistence writes outside actions.
+22. Keep actions focused and readable. Extract complex validation or transformation into module-level arrow-function helpers below the store and subscriber declarations, and never return a helper call directly from an action. The action receives the helper's named values and explicitly composes the returned state, spreading `state` and listing each property it changes.
+23. Add one blank line immediately before and after each action definition in the actions object.
+
 ## Present results
 
 Describe the affected screens and abstractions, the concrete changes, and the checks performed. For reviews, identify actionable deviations and their source rules. For skill maintenance, report changed files, any changed architectural rules, and unresolved contradictions.
