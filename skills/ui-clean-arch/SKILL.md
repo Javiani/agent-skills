@@ -26,6 +26,12 @@ Ask when a product or behavior decision is missing. First search the context and
 
 Prioritize understanding throughout the source: use consistent indentation, spacing, and line breaks that reveal logical blocks, contracts, and UI composition. Avoid compressing functions, control flow, large objects, or UI trees onto a single line. Separate steps visually and follow language/project conventions. Do not mandate a line limit or specific tool; generated or minified distribution artifacts are exceptions.
 
+## Co-located types
+
+In TypeScript code, keep type definitions out of implementation files and inline signatures. Extract named types and interfaces into a `types.ts` co-located with the context that owns them, and import them with `import type` where appropriate. Ordinary annotations referencing named or built-in types remain in the implementation.
+
+The folder defines the reuse scope: `services/types.ts` holds contracts reusable by Services in that folder; `services/capability/types.ts` holds types specific to that grouping. Apply the same rule to Components, Store/actions, Entities, and auxiliary abstractions. Choose the closest owning context; do not collect unrelated types in a global file or create empty `types.ts` files. Type imports must respect the same layer and domain/shared dependency boundaries as other imports.
+
 ## Essential contracts
 
 - **Components:** meaningful screen sections independent of responsive arrangement. Layout containers are not architectural abstractions. Components may manage events and state confined to the section without persistence. For persistence or propagation across Components, connect to Store actions and render the received state.
@@ -91,4 +97,4 @@ Scenario names and .extension are illustrative. Use the appropriate extension. D
 
 ## Final verification
 
-Review source readability, including styles, markup, and tests; expand compressed sections before finishing. Review imports along both axes: layers and domain/shared. Check one Store per screen, shared actions without common state, complete-state notifications, integrations encapsulated in Services, and Entity purity. Check composition indices and exclusive/shared resource placement. Use application-appropriate functional checks to demonstrate preservation or requirement fulfillment. Structural validation of the skill package is not proof of correct application behavior.
+Review source readability, including styles, markup, and tests; expand compressed sections before finishing. Review imports along both axes: layers and domain/shared. Check one Store per screen, shared actions without common state, complete-state notifications, integrations encapsulated in Services, and Entity purity. Check composition indices and exclusive/shared resource placement. Check that type definitions live in context-owned `types.ts` files, with reuse scope reflected by their folder and imports respecting architectural boundaries. Use application-appropriate functional checks to demonstrate preservation or requirement fulfillment. Structural validation of the skill package is not proof of correct application behavior.

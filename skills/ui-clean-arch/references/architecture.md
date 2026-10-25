@@ -262,6 +262,17 @@ The tree illustrates extensibility. Do not require constants or formatters in ev
 ### Structural topics addressed later
 Code-root location, framework conventions, internal folder organization, structural and atomic components, whole-screen composition, and shared resources are covered in the following sections.
 
+## Type organization — confirmed
+In TypeScript code, avoid cluttering implementation files with inline type definitions or local type/interface declarations. Extract those definitions into named exports in a `types.ts` co-located with their owning context. Implementations retain ordinary annotations referencing named or built-in types and import extracted contracts with `import type` where appropriate.
+
+The location communicates scope and reuse. For example, `services/types.ts` contains contracts available for reuse by Services within that folder, while `services/statement/types.ts` contains contracts belonging specifically to that Service grouping. Apply the same principle to Components, Store and actions, Entities, and auxiliary abstractions, both in domains and shared.
+
+Keep types in the closest context that owns them. Do not create a global collection of unrelated types, promote screen-exclusive contracts to shared, or create empty type files. Extracting a type does not authorize reverse-layer imports, domain-to-domain imports, or shared-to-domain imports; reuse must follow the existing dependency rules.
+
+Motivation: keep implementation focused on behavior and make contracts discoverable and reusable within their actual context.
+
+Review criterion: verify that type definitions are extracted to the appropriate co-located `types.ts`, implementation files reference those contracts, and type imports preserve layer and domain/shared boundaries.
+
 ## Component organization — confirmed
 Inside components, each structural screen component has its own folder. Its implementation entry point is an index file with the technology's extension. This file composes and imports internal or external atomic components.
 
