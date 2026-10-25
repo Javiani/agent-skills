@@ -1,0 +1,161 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="950" viewBox="0 0 1200 950" role="img" aria-labelledby="title desc">
+<title id="title">UI Clean Architecture — Light Mode</title>
+<desc id="desc">Quatro camadas circulares concêntricas em estilo de circuitos: Components em violeta, Stores em laranja escuro, Services em azul-petróleo e Entities em verde escuro. Paleta para fundo branco, com fundo transparente.</desc>
+<defs>
+<path id="label-0" d="M 271.805 269.921 A 387 387 0 0 1 928.195 269.921"/>
+<path id="label-1" d="M 356.610 322.913 A 287 287 0 0 1 843.390 322.913"/>
+<path id="label-2" d="M 441.415 375.905 A 187 187 0 0 1 758.585 375.905"/>
+</defs>
+<g id="components" fill="none" stroke="#6543A0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+<circle cx="600" cy="475" r="435"/>
+<path d="M 173.585 452.653 A 427 427 0 0 1 219.540 281.146"/>
+<path d="M 277.739 194.863 A 427 427 0 0 1 426.323 84.916"/>
+<path d="M 489.484 62.550 A 427 427 0 0 1 688.778 57.331"/>
+<path d="M 773.677 84.916 A 427 427 0 0 1 927.101 200.530"/>
+<path d="M 977.019 274.536 A 427 427 0 0 1 1025.960 445.214"/>
+<path d="M 1022.844 534.427 A 427 427 0 0 1 945.450 725.984"/>
+<path d="M 891.213 787.288 A 427 427 0 0 1 710.516 887.450"/>
+<path d="M 637.216 900.375 A 427 427 0 0 1 453.957 876.249"/>
+<path d="M 367.439 833.112 A 427 427 0 0 1 230.207 688.500"/>
+<path d="M 204.092 634.957 A 427 427 0 0 1 174.040 504.786"/>
+<path d="M 174.993 361.120 A 440 440 0 0 1 267.928 186.334" stroke-width="1.2"/>
+<path d="M 750.489 61.535 A 440 440 0 0 1 905.650 158.490" stroke-width="1.2"/>
+<path d="M 1001.960 653.964 A 440 440 0 0 1 894.417 801.984" stroke-width="1.2"/>
+<path d="M 464.033 893.465 A 440 440 0 0 1 299.921 796.796" stroke-width="1.2"/>
+<path d="M 191.234 326.221 L 179.018 321.775" stroke-width="1.3"/>
+<circle cx="179.018" cy="321.775" r="6.5"/>
+<path d="M 292.409 167.409 L 283.216 158.216" stroke-width="1.3"/>
+<circle cx="283.216" cy="158.216" r="6.5"/>
+<path d="M 437.046 71.675 L 432.176 59.622" stroke-width="1.3"/>
+<circle cx="432.176" cy="59.622" r="6.5"/>
+<path d="M 600.000 40.000 L 600.000 27.000" stroke-width="1.3"/>
+<circle cx="600.000" cy="27.000" r="6.5"/>
+<path d="M 762.954 71.675 L 767.824 59.622" stroke-width="1.3"/>
+<circle cx="767.824" cy="59.622" r="6.5"/>
+<path d="M 907.591 167.409 L 916.784 158.216" stroke-width="1.3"/>
+<circle cx="916.784" cy="158.216" r="6.5"/>
+<path d="M 1020.178 362.414 L 1032.735 359.049" stroke-width="1.3"/>
+<circle cx="1032.735" cy="359.049" r="6.5"/>
+<path d="M 1020.178 587.586 L 1032.735 590.951" stroke-width="1.3"/>
+<circle cx="1032.735" cy="590.951" r="6.5"/>
+<path d="M 907.591 782.591 L 916.784 791.784" stroke-width="1.3"/>
+<circle cx="916.784" cy="791.784" r="6.5"/>
+<path d="M 762.954 878.325 L 767.824 890.378" stroke-width="1.3"/>
+<circle cx="767.824" cy="890.378" r="6.5"/>
+<path d="M 600.000 910.000 L 600.000 923.000" stroke-width="1.3"/>
+<circle cx="600.000" cy="923.000" r="6.5"/>
+<path d="M 437.046 878.325 L 432.176 890.378" stroke-width="1.3"/>
+<circle cx="432.176" cy="890.378" r="6.5"/>
+<path d="M 292.409 782.591 L 283.216 791.784" stroke-width="1.3"/>
+<circle cx="283.216" cy="791.784" r="6.5"/>
+<path d="M 179.822 587.586 L 167.265 590.951" stroke-width="1.3"/>
+<circle cx="167.265" cy="590.951" r="6.5"/>
+</g>
+<text fill="#6543A0" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="35" font-weight="300" letter-spacing="0.3"><textPath href="#label-0" startOffset="50%" text-anchor="middle">Components</textPath></text>
+<g id="stores" fill="none" stroke="#A65316" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+<circle cx="600" cy="475" r="335"/>
+<path d="M 273.448 457.886 A 327 327 0 0 1 308.641 326.545"/>
+<path d="M 353.210 260.469 A 327 327 0 0 1 466.997 176.271"/>
+<path d="M 515.366 159.142 A 327 327 0 0 1 667.987 155.146"/>
+<path d="M 733.003 176.271 A 327 327 0 0 1 850.497 264.808"/>
+<path d="M 888.724 321.483 A 327 327 0 0 1 926.203 452.190"/>
+<path d="M 923.818 520.510 A 327 327 0 0 1 864.549 667.206"/>
+<path d="M 823.013 714.153 A 327 327 0 0 1 684.634 790.858"/>
+<path d="M 628.500 800.756 A 327 327 0 0 1 488.159 782.279"/>
+<path d="M 421.903 749.245 A 327 327 0 0 1 316.810 638.500"/>
+<path d="M 296.811 597.496 A 327 327 0 0 1 273.797 497.810"/>
+<path d="M 271.585 387.002 A 340 340 0 0 1 343.399 251.940" stroke-width="1.2"/>
+<path d="M 716.287 155.505 A 340 340 0 0 1 836.184 230.424" stroke-width="1.2"/>
+<path d="M 910.605 613.290 A 340 340 0 0 1 827.504 727.669" stroke-width="1.2"/>
+<path d="M 494.934 798.359 A 340 340 0 0 1 368.121 723.660" stroke-width="1.2"/>
+<path d="M 285.203 360.423 L 272.987 355.977" stroke-width="1.3"/>
+<circle cx="272.987" cy="355.977" r="6.5"/>
+<path d="M 363.119 238.119 L 353.927 228.927" stroke-width="1.3"/>
+<circle cx="353.927" cy="228.927" r="6.5"/>
+<path d="M 502.055 154.638 L 498.255 142.206" stroke-width="1.3"/>
+<circle cx="498.255" cy="142.206" r="6.5"/>
+<path d="M 697.945 154.638 L 701.745 142.206" stroke-width="1.3"/>
+<circle cx="701.745" cy="142.206" r="6.5"/>
+<path d="M 836.881 238.119 L 846.073 228.927" stroke-width="1.3"/>
+<circle cx="846.073" cy="228.927" r="6.5"/>
+<path d="M 923.585 388.296 L 936.142 384.931" stroke-width="1.3"/>
+<circle cx="936.142" cy="384.931" r="6.5"/>
+<path d="M 923.585 561.704 L 936.142 565.069" stroke-width="1.3"/>
+<circle cx="936.142" cy="565.069" r="6.5"/>
+<path d="M 836.881 711.881 L 846.073 721.073" stroke-width="1.3"/>
+<circle cx="846.073" cy="721.073" r="6.5"/>
+<path d="M 697.945 795.362 L 701.745 807.794" stroke-width="1.3"/>
+<circle cx="701.745" cy="807.794" r="6.5"/>
+<path d="M 502.055 795.362 L 498.255 807.794" stroke-width="1.3"/>
+<circle cx="498.255" cy="807.794" r="6.5"/>
+<path d="M 363.119 711.881 L 353.927 721.073" stroke-width="1.3"/>
+<circle cx="353.927" cy="721.073" r="6.5"/>
+<path d="M 276.415 561.704 L 263.858 565.069" stroke-width="1.3"/>
+<circle cx="263.858" cy="565.069" r="6.5"/>
+</g>
+<text fill="#A65316" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="35" font-weight="300" letter-spacing="0.3"><textPath href="#label-1" startOffset="50%" text-anchor="middle">Stores</textPath></text>
+<g id="services" fill="none" stroke="#17658E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+<circle cx="600" cy="475" r="235"/>
+<path d="M 373.311 463.120 A 227 227 0 0 1 397.742 371.944"/>
+<path d="M 428.681 326.075 A 227 227 0 0 1 507.671 267.625"/>
+<path d="M 541.248 255.735 A 227 227 0 0 1 647.196 252.960"/>
+<path d="M 692.329 267.625 A 227 227 0 0 1 773.892 329.087"/>
+<path d="M 800.429 368.430 A 227 227 0 0 1 826.447 459.165"/>
+<path d="M 824.791 506.592 A 227 227 0 0 1 783.647 608.427"/>
+<path d="M 754.814 641.017 A 227 227 0 0 1 658.752 694.265"/>
+<path d="M 619.784 701.136 A 227 227 0 0 1 522.361 688.310"/>
+<path d="M 476.367 665.378 A 227 227 0 0 1 403.412 588.500"/>
+<path d="M 389.529 560.036 A 227 227 0 0 1 373.553 490.835"/>
+<path d="M 368.178 412.883 A 240 240 0 0 1 418.870 317.546" stroke-width="1.2"/>
+<path d="M 682.085 249.474 A 240 240 0 0 1 766.718 302.358" stroke-width="1.2"/>
+<path d="M 819.251 572.617 A 240 240 0 0 1 760.591 653.355" stroke-width="1.2"/>
+<path d="M 525.836 703.254 A 240 240 0 0 1 436.320 650.525" stroke-width="1.2"/>
+<path d="M 368.570 434.193 L 355.768 431.935" stroke-width="1.3"/>
+<circle cx="355.768" cy="431.935" r="6.5"/>
+<path d="M 433.830 308.830 L 424.638 299.638" stroke-width="1.3"/>
+<circle cx="424.638" cy="299.638" r="6.5"/>
+<path d="M 600.000 240.000 L 600.000 227.000" stroke-width="1.3"/>
+<circle cx="600.000" cy="227.000" r="6.5"/>
+<path d="M 766.170 308.830 L 775.362 299.638" stroke-width="1.3"/>
+<circle cx="775.362" cy="299.638" r="6.5"/>
+<path d="M 831.430 434.193 L 844.232 431.935" stroke-width="1.3"/>
+<circle cx="844.232" cy="431.935" r="6.5"/>
+<path d="M 820.828 555.375 L 833.044 559.821" stroke-width="1.3"/>
+<circle cx="833.044" cy="559.821" r="6.5"/>
+<path d="M 734.790 667.501 L 742.247 678.150" stroke-width="1.3"/>
+<circle cx="742.247" cy="678.150" r="6.5"/>
+<path d="M 600.000 710.000 L 600.000 723.000" stroke-width="1.3"/>
+<circle cx="600.000" cy="723.000" r="6.5"/>
+<path d="M 448.945 655.020 L 440.589 664.979" stroke-width="1.3"/>
+<circle cx="440.589" cy="664.979" r="6.5"/>
+<path d="M 379.172 555.375 L 366.956 559.821" stroke-width="1.3"/>
+<circle cx="366.956" cy="559.821" r="6.5"/>
+</g>
+<text fill="#17658E" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="35" font-weight="300" letter-spacing="0.3"><textPath href="#label-2" startOffset="50%" text-anchor="middle">Services</textPath></text>
+<g id="entities" fill="none" stroke="#427018" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+<circle cx="600" cy="475" r="135"/>
+<path d="M 473.174 468.353 A 127 127 0 0 1 486.842 417.343"/>
+<path d="M 504.152 391.681 A 127 127 0 0 1 548.344 358.980"/>
+<path d="M 567.130 352.327 A 127 127 0 0 1 626.405 350.775"/>
+<path d="M 651.656 358.980 A 127 127 0 0 1 697.288 393.366"/>
+<path d="M 712.134 415.377 A 127 127 0 0 1 726.691 466.141"/>
+<path d="M 725.764 492.675 A 127 127 0 0 1 702.745 549.649"/>
+<path d="M 686.614 567.882 A 127 127 0 0 1 632.870 597.673"/>
+<path d="M 611.069 601.517 A 127 127 0 0 1 556.563 594.341"/>
+<path d="M 530.831 581.511 A 127 127 0 0 1 490.015 538.500"/>
+<path d="M 482.248 522.575 A 127 127 0 0 1 473.309 483.859"/>
+<path d="M 464.770 438.765 A 140 140 0 0 1 494.341 383.152" stroke-width="1.2"/>
+<path d="M 647.883 343.443 A 140 140 0 0 1 697.252 374.292" stroke-width="1.2"/>
+<path d="M 727.896 531.943 A 140 140 0 0 1 693.678 579.040" stroke-width="1.2"/>
+<path d="M 556.738 608.148 A 140 140 0 0 1 504.520 577.390" stroke-width="1.2"/>
+<path d="M 489.414 397.567 L 478.765 390.111" stroke-width="1.3"/>
+<circle cx="478.765" cy="390.111" r="6.5"/>
+<path d="M 695.459 379.541 L 704.652 370.348" stroke-width="1.3"/>
+<circle cx="704.652" cy="370.348" r="6.5"/>
+<path d="M 703.416 561.776 L 713.375 570.133" stroke-width="1.3"/>
+<circle cx="713.375" cy="570.133" r="6.5"/>
+<path d="M 496.584 561.776 L 486.625 570.133" stroke-width="1.3"/>
+<circle cx="486.625" cy="570.133" r="6.5"/>
+</g>
+<text x="600" y="475" fill="#427018" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-size="35" font-weight="300" text-anchor="middle" dominant-baseline="middle">Entities</text>
+</svg>
