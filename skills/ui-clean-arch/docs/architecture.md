@@ -215,9 +215,9 @@ An entity can compose another entity's result. In the author's example, Product 
 The original reference example is [entity-example.js](entity-example.js). Its fields, default strings, and currency belong to the ecommerce scenario; they are not universal architectural defaults.
 
 ### Null values and validation — confirmed
-Entities must implement the validation methods for their own shape and property composition according to the application contract. This includes required properties, value types, nested structures, and composed Entities where applicable. Keep these methods in the owning Entity grouping; they may compose validation methods from other Entities.
+Entities must implement the validation methods for their own shape and property composition according to the application contract. This includes required properties, value types, nested structures, and composed Entities where applicable. Keep these methods in the same file as the formatting functions they support, never in a separate validation file; they may compose validation methods from other Entities.
 
-A Service may invoke these methods on data returned by an external source, but the validation implementation must remain in Entities. Do not move or duplicate application-data validation in Services. Validation methods follow Entity purity: synchronous, stateless, without input mutation or external effects. Their result and invalid-input behavior are defined by the application contract.
+A Service may invoke these methods on data returned by an external source, but the validation implementation must remain in Entities. Do not move or duplicate application-data validation in Services. Validation methods follow Entity purity: synchronous, stateless, without input mutation or external effects. Their result and invalid-input behavior are defined by the application contract. Validation functions need not follow the formatters’ function shape or concise object-returning style: they may contain multiple statements, branches, intermediate variables, and internal logic as needed.
 
 When using information could cause invalid access because of null, handle it inside the entity that uses the information, when needed.
 
@@ -225,7 +225,7 @@ The user or developer decides whether validation is necessary based on the scena
 
 JavaScript precision: destructured property defaults cover missing values or undefined, not explicit null. They do not provide complete null safety on their own. The original example illustrates the design without introducing validation the author did not require for that scenario.
 
-Review criterion: verify that Entity shape and property-composition validation is implemented in the owning Entities, even when called from Services. Services must not contain or duplicate those validation rules. When the application contract permits null and using it could fail, verify handling in the consuming entity. When presence is guaranteed by contract, do not add checks solely as an architectural convention.
+Review criterion: verify that Entity shape and property-composition validation is implemented in the owning Entities, even when called from Services. Verify that validators share the formatters’ file and that validations and private functions are at the end, after all formatters. Services must not contain or duplicate those validation rules. When the application contract permits null and using it could fail, verify handling in the consuming entity. When presence is guaranteed by contract, do not add checks solely as an architectural convention.
 
 ### Purity and execution — confirmed
 Entities must be pure functions: they only transform received data, synchronously, without retaining state between calls.
@@ -420,9 +420,11 @@ The wrapper illustrates integration-capability composition within Services. It d
 Review criterion: use a folder and index per grouping, allowing internal files at the developer's discretion. Do not require a file per function or a universal HTTP wrapper.
 
 ## Entity organization — confirmed
-Entities follow the same convention as Services: a folder per grouping with an index entry using the implementation's extension. Complementary functions may stay in index or be split into internal files at the developer's discretion.
+Entities follow the same convention as Services: a folder per grouping with an index entry using the implementation's extension. Complementary formatters may stay in index or be split into internal files at the developer's discretion. Validation functions must remain in the same file as the formatters they support; do not extract a separate validation file.
 
-This preserves Product and ProductPrice in one file and composition between entities. Folder conventions do not change purity, synchronous execution, single destructured-object input, or semantic output.
+Always place validation functions and private (non-exported) functions at the end of the file, after all formatters. This ordering also applies to validation functions exported for Services to call; validation does not have to be private.
+
+This preserves Product and ProductPrice in one file and composition between entities. Folder conventions do not change purity, synchronous execution, the formatters’ single destructured-object input, or semantic output. Validation functions have the implementation freedom described above.
 
 Illustrative example, without prescribing entity names for the screen:
 
