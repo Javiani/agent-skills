@@ -189,6 +189,8 @@ They must not retain local state or persist information or data within themselve
 
 Review criterion: verify function implementations and no retained Service state. Do not implement classes or store data between calls in the Service.
 
+Validation of application data returned by an external source belongs to Entities. A Service may call an Entity validation method before returning or adapting data, but must not implement or duplicate checks of the Entity shape or property composition. Transport handling, such as HTTP status checks, remains an integration concern of Services.
+
 ### Service topics not fully prescribed
 - How failures are communicated.
 - Scenario-specific response contracts. The Entity section describes the normal adaptation pattern, without requiring every response to be adapted.
@@ -213,13 +215,17 @@ An entity can compose another entity's result. In the author's example, Product 
 The original reference example is [entity-example.js](entity-example.js). Its fields, default strings, and currency belong to the ecommerce scenario; they are not universal architectural defaults.
 
 ### Null values and validation — confirmed
+Entities must implement the validation methods for their own shape and property composition according to the application contract. This includes required properties, value types, nested structures, and composed Entities where applicable. Keep these methods in the owning Entity grouping; they may compose validation methods from other Entities.
+
+A Service may invoke these methods on data returned by an external source, but the validation implementation must remain in Entities. Do not move or duplicate application-data validation in Services. Validation methods follow Entity purity: synchronous, stateless, without input mutation or external effects. Their result and invalid-input behavior are defined by the application contract.
+
 When using information could cause invalid access because of null, handle it inside the entity that uses the information, when needed.
 
 The user or developer decides whether validation is necessary based on the scenario and confidence in the data contract. Do not require null checks for every field or universal normalization by the caller.
 
 JavaScript precision: destructured property defaults cover missing values or undefined, not explicit null. They do not provide complete null safety on their own. The original example illustrates the design without introducing validation the author did not require for that scenario.
 
-Review criterion: when the application contract permits null and using it could fail, verify handling in the consuming entity. When presence is guaranteed by contract, do not add checks solely as an architectural convention.
+Review criterion: verify that Entity shape and property-composition validation is implemented in the owning Entities, even when called from Services. Services must not contain or duplicate those validation rules. When the application contract permits null and using it could fail, verify handling in the consuming entity. When presence is guaranteed by contract, do not add checks solely as an architectural convention.
 
 ### Purity and execution — confirmed
 Entities must be pure functions: they only transform received data, synchronously, without retaining state between calls.
