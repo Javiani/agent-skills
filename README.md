@@ -6,7 +6,7 @@ A collection of reusable Agent Skills. Each skill is self-contained under `skill
 
 | Skill | Purpose |
 | --- | --- |
-| [`ui-clean-architecture`](skills/ui-clean-architecture/SKILL.md) | Organizes screen-oriented front-end applications using the documented UI architecture. |
+| [`ui-clean-arch`](skills/ui-clean-arch/SKILL.md) | Creates or refactors frontend applications using UI Clean Architecture. |
 | [`jails`](skills/jails/SKILL.md) | Builds and debugs Jails JavaScript components, state, events, templates, and application integrations. |
 | [`jails-stdlib`](skills/jails-stdlib/SKILL.md) | Selects and integrates the 19 jails.stdlib modules using source-verified APIs, examples, and limitations. |
 
@@ -20,7 +20,7 @@ skills/
 ├── jails-stdlib/
 │   ├── SKILL.md
 │   └── references/
-└── ui-clean-architecture/
+└── ui-clean-arch/
     ├── SKILL.md
     └── references/
 ```
@@ -37,7 +37,7 @@ npx skills add javiani/agent-skills --list     # browse before installing
 Or grab individual skills:
 
 ```bash
-npx skills add javiani/agent-skills --skill ui-clean-architecture
+npx skills add javiani/agent-skills --skill ui-clean-arch
 npx skills add javiani/agent-skills --skill jails
 npx skills add javiani/agent-skills --skill jails-stdlib
 ```
@@ -51,4 +51,4 @@ Skills follow the [Agent Skills specification](https://agentskills.io/specificat
 - Detailed guidance lives in `references/` and is loaded only when relevant to the task.
 - Scripts and assets are optional; include them only when the skill needs them.
 
-`jails` documents framework behavior and component conventions; `jails-stdlib` documents library module contracts; `ui-clean-architecture` defines application organization. Apply the relevant skills together when a task spans these concerns.
+`jails` documents framework behavior and component conventions; `jails-stdlib` documents library module contracts; `ui-clean-arch` defines application organization. Apply the relevant skills together when a task spans these concerns.

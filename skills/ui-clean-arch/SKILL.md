@@ -1,13 +1,13 @@
 ---
 name: ui-clean-arch
-description: Create frontend web applications or completely refactor existing applications using ui-clean-arch, with a domain per screen, Components, Store, Services, and Entities. Use when the user requests ui-clean-arch or invokes $ui-clean-arch. The separate ui-clean-architecture skill has its own rules; do not substitute this skill for it or impose it on unrelated work.
+description: Create frontend web applications or completely refactor existing applications using ui-clean-arch, with a domain per screen, Components, Store, Services, and Entities. Use when the user requests ui-clean-arch or invokes $ui-clean-arch.
 ---
 
 # ui-clean-arch
 
-## Invocation and coexistence
+## Invocation
 
-Invoke this skill with `$ui-clean-arch`. The separate `$ui-clean-architecture` command selects a different skill with its own specification. Both skills coexist; neither replaces the other. Follow the explicitly selected skill's references without combining their rules. If a request leaves the choice ambiguous and the difference affects implementation, ask which skill to use.
+Invoke this skill with `$ui-clean-arch`.
 
 Build the complete application with this architecture or fully migrate an existing application while preserving behavior and functionality. The architecture is UI-framework agnostic; of its four official abstractions, only Components may depend on that framework.
 
