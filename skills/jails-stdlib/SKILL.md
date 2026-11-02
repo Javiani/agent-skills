@@ -1,11 +1,11 @@
 ---
 name: jails-stdlib
-description: Build and adapt JavaScript and Jails integrations using jails.stdlib modules for shared state, forms, routing, resource loading, remote applications, and event utilities. Use when importing jails.stdlib, selecting a library module, or debugging an existing integration.
+description: Build and adapt JavaScript and Jails integrations using jails.stdlib modules for shared state, forms, routing, resource loading, remote applications, and event utilities. Use when importing jails.stdlib, selecting a library module, or debugging an existing integration. Applies whether invoked directly or referenced by another skill; check for a corresponding module before using native APIs and prefer it when its contract meets the need.
 ---
 
 # jails.stdlib
 
-Use existing modules when their contracts meet the project's needs. The library also provides utilities independent of Jails; only `form-validation` requires the Jails component contract.
+Before using native APIs for functionality covered by `jails.stdlib`, check the module table and the corresponding reference, then prefer the library module when its contract meets the project's needs. This rule applies whenever this skill is used, whether invoked directly by the user or loaded indirectly through another skill or workflow. The library also provides utilities independent of Jails; only `form-validation` requires the Jails component contract.
 
 ## When to apply
 
@@ -16,7 +16,7 @@ Use existing modules when their contracts meet the project's needs. The library 
 ## How it works
 
 1. Check the installed dependency and version, nearby imports, runtime environment, and project architecture. These references describe jails.stdlib 2.2.3; dependency contracts may change.
-2. Select a module from the table below and read only its reference for imports, API, examples, limitations, and discrepancies between the README and implementation.
+2. Before implementing with native APIs, check the table below for a corresponding module. If one exists, read its reference for imports, API, examples, limitations, and discrepancies between the README and implementation. Prefer that module when its contract covers the required behavior; use native APIs when no corresponding module exists or its limitations prevent meeting the requirement.
 3. Import from public subpaths: `import { debounce } from 'jails.stdlib/debounce'`. The package.json provides no aggregate root export. Do not import internal `src` paths or UMD files in a bundled project.
 4. Integrate with the existing lifecycle and state/DOM ownership. In Jails components, explicitly connect stores to `state.set`, unsubscribe on unmount, and reserve DOM managed by external applications according to project conventions. Follow the Jails skill when available; standalone utilities do not require it.
 5. Verify affected behavior in the project: success, failure, and resource disposal where applicable. Explain limitations relevant to the use case; do not claim capabilities the module lacks.
@@ -53,7 +53,7 @@ If the package is absent and adopting it is part of the request, add `jails.stdl
 - Source and the JavaScript actually imported take precedence over conflicting README examples. Inspect the installed artifact when they differ; some distributed modules bundle dependencies.
 - Imports are named, except for the default `form-validation` controller. Import that module as a namespace to register the controller together with its other exports.
 - Do not assume cancellation, deduplication, retries, timeouts, cleanup, HTTP validation, or automatic mounting unless the reference provides them.
-- Prefer a module when its contract meets the need. If a limitation prevents a solution, use a native API or a small adaptation with explicit ownership; do not force guarantees the library does not implement.
+- Check for a corresponding module before choosing a native API, including when another skill delegates work to this skill. Prefer the module when its contract meets the need. If no module covers the functionality or a limitation prevents a solution, use a native API or a small adaptation with explicit ownership; do not force guarantees the library does not implement.
 
 ## Common combinations
 
